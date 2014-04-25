@@ -1,0 +1,82 @@
+
+
+.form-item{
+  padding-top: 5px;
+}
+.form-item label{
+  font-weight: normal;
+  margin-bottom: 3px;
+}
+
+.form-item input{
+  border: 0;
+  border-bottom: 1px solid black;
+  height: 30px;
+  font-size: 16px;
+  line-height: 20px;
+  font-family: Georgia, serif;
+  background-color: transparent;
+}
+
+.form-item .description{
+  font-family:  'Droid Sans', sans-serif;
+  font-size: 12px;
+  line-height: 15px;
+  margin-top: 9px;
+}
+
+.form-actions input,
+.form-actions a,
+.form-item .file-widget .form-submit{
+  background-color:rgb(110,255,175);
+  padding: 10px;
+  color:black;
+    font-family: 'Droid Sans Mono', sans-serif;
+  font-size: 12px;
+  line-height: 15px;
+  display: inline-block;
+  text-transform: uppercase;
+  border: 0;
+  margin: 0 10px 0 0;
+  height: auto;
+
+}
+
+.form-item .file-widget .form-submit{
+  background-color:rgb(234,255,239);
+}
+
+.form-item input.form-file{
+  border: 0;
+  margin-right: 10px;
+}
+
+.progress {
+  font-weight: normal;
+}
+.progress .bar {
+  background-color:rgb(249,229,220);
+  margin: 0 0.2em;
+}
+.progress .bar{
+  border: 0;
+}
+.progress .filled {
+  background: red;
+}
+
+.ajax-progress .message,
+.progress .percentage{
+  font-family:  'Droid Sans', sans-serif;
+  font-size: 12px;
+  line-height: 15px;
+  margin-top: 9px;
+}
+
+.form-item .file-widget .file a,
+.form-item .file-widget .file .file-size{
+ font-family:  'Droid Sans', sans-serif;
+  font-size: 12px;
+  line-height: 15px;
+}
+

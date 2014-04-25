@@ -1,0 +1,12 @@
+.block-aggregator ul{
+  margin 0;
+  list-style: none;
+}
+.block-aggregator ul li{
+  margin: 0;
+  padding: 0px 10px;
+  font-family: 'Droid Sans', sans-serif;
+  font-size: 12px;
+  line-height: 15px;
+  margin-top: 20px;
+}

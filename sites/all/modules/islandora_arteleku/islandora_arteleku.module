@@ -1,0 +1,434 @@
+<?php
+
+/**
+ * @file
+ * Hooks and constants for xml_form_elements.
+ */
+
+/**
+ * Constants
+ */
+
+// LLAMADAS A WIKIDATA
+require("tools/wikidata.php");
+require("tools/loc.php");
+
+function islandora_arteleku_form() {
+	  $form = array();
+	// Tipo vinculado al vocabulario 2 de entidades.
+	    $form['autoridades_test'] = array(
+		'#title' => t('Autoridades'),
+	        '#type' => 'textfield',
+		'#default_value' => 'nada',
+		'#size' => 60,
+		//'#autocomplete_path' => 'autoridades/autocomplete',
+		//'#options' => array('test'=>'33'),
+	  );
+	  $form['wikidata'] = array(
+		'#title' => t('Autoridades Wikidata'),
+		'#type' => 'textfield',
+		'#autocomplete_path' => 'autoridades/wikidata/autocomplete',
+	  );
+	  $form['relators'] = array(
+		'#title' => t('Relators Library of Congress'),
+		'#type' => 'textfield',
+		'#autocomplete_path' => 'autoridades/loc/relators',
+	  );
+
+	  $form['submit'] = array(
+	        '#type' => 'submit',
+	    	'#value' => 'Save',
+	  );	   
+	  return $form;
+}
+
+function islandora_arteleku_element_info() {
+	return array(
+		'autoridades_new' => array(
+			'#type' => 'textfield', 
+  			'#title' => t('ejemplos de tipos'), 
+  			'#default_value' => 'test', 
+		),
+	);
+}
+
+//function islandora_arteleku_form_alter(&$form, &$form_state, $form_id) { dpm(print_r($form_id)); }
+
+function islandora_arteleku_menu() {  
+	$items=array();
+	$items['autoridades/autocomplete'] = array(
+		     'page callback' => '_islandora_arteleku_autocomplete',
+		     'access callback' => TRUE,
+		     'type' => MENU_CALLBACK
+	);
+	$items['autoridades/wikidata/autocomplete'] = array(
+		'page callback' => '_islandora_arteleku_wikidata_autocomplete',
+		'access arguments' => array('autoridades de wikidata'),
+		'type' => MENU_CALLBACK
+	);
+	$items['autoridades/loc/relators'] = array(
+		'page callback' => '_islandora_arteleku_loc_relators',
+		'access arguments' => array('loc relators'),
+		'type' => MENU_CALLBACK
+	);
+	$items['genero/autocomplete'] = array(
+		'page callback' => '_islandora_arteleku_marc_genre_autocomplete',
+		'access callback' => TRUE,
+		'type' => MENU_CALLBACK,
+	);
+	$items['topic/autocomplete'] = array(
+		'page callback' => '_islandora_arteleku_topic_autocomplete',
+		'access callback' => TRUE,
+		'type' => MENU_CALLBACK,
+	);
+	$items['relator/autocomplete'] = array(
+		'page callback' => '_islandora_arteleku_relator_autocomplete',
+		'access callback' => TRUE,
+		'type' => MENU_CALLBACK,
+	);
+
+	return $items;
+}
+
+function _islandora_arteleku_relator_autocomplete($s) {
+	$matches = array();
+	$vid = 3;
+	$result = db_select('taxonomy_term_data', 't')
+    	-> fields('t', array('tid', 'name'))
+    	-> condition('vid', $vid, '=')
+    	-> condition('name', '%%'.$s.'%%', 'LIKE')
+    	-> execute();
+
+  	
+	foreach ($result as $term) {
+		$t = taxonomy_term_load($term->tid);
+		$matches[$term->name] = $term->name;
+		//dpm(print_r($t,TRUE));
+		/*if (isset($t->field_topic_code["und"])):
+			$matches[$t->field_topic_code["und"][0]["value"]] = $term->name;
+		endif;*/
+	}
+	
+	drupal_json_output($matches);
+}
+
+
+function _islandora_arteleku_topic_autocomplete($s) {
+	$matches = array();
+
+	$vid = 5; // topic list taxonomy
+  	$result = db_select('taxonomy_term_data', 't')
+    	-> fields('t', array('tid', 'name'))
+    	-> condition('vid', $vid, '=')
+    	-> condition('name', '%%'.$s.'%%', 'LIKE')
+    	-> execute();
+
+  	
+	foreach ($result as $term) {
+		$t = taxonomy_term_load($term->tid);
+		//$matches[$term->name] = $term->name;
+		//dpm(print_r($t,TRUE));
+		if (isset($t->field_topic_code["und"])):
+			$matches[$t->field_topic_code["und"][0]["value"]] = $term->name;
+		endif;
+	}
+	
+	drupal_json_output($matches);
+}
+
+function _islandora_arteleku_marc_genre_autocomplete($s) {
+	$matches = array();
+
+	$vid = 4; // marc genre list taxonomy
+  	$result = db_select('taxonomy_term_data', 't')
+    	-> fields('t', array('tid', 'name'))
+    	-> condition('vid', $vid, '=')
+    	-> condition('name', '%%'.$s.'%%', 'LIKE')
+    	-> execute();
+
+  	
+	foreach ($result as $term) {
+		$t = taxonomy_term_load($term->tid);
+		//dpm(print_r($t,TRUE));
+		if (isset($t->field_genre_code["und"])) :
+			$matches[$t->field_genre_code["und"][0]["value"]] = $term->name;
+		endif;
+	}
+	
+	drupal_json_output($matches);
+}
+
+function islandora_arteleku_genre_validate($field) {
+	$vid = 4;
+	$id_marcgt = $field["#value"];
+	// query de busqueda del marcgt para ver si existe en la taxonomy
+	/*if (!existe_taxonomy($vid,$field["#value"])) {	
+		form_set_error("autoridades",t("{$field["#value"]} no es un genero válido")); 
+	}*/
+	
+}
+
+function _islandora_arteleku_autocomplete($string) {
+	
+	$matches = array();
+	
+	// Buscamos en el propio vocabulario
+	//vocabulary id
+  	$vid = 2;
+  	$result = db_select('taxonomy_term_data', 't')
+    	-> fields('t', array('tid', 'name'))
+    	-> condition('vid', $vid, '=')
+    	-> condition('name', '%%'.$string.'%%', 'LIKE')
+    	//-> range(0, 10)
+    	-> execute();
+  	
+	foreach ($result as $term) {
+    		$matches[$term->name] = check_plain($term -> name);
+	}
+	
+	// Buscamos en sus sinonimos
+	$result = db_select('field_data_synonyms_synonyms','s')
+	-> fields('s',array('entity_id','synonyms_synonyms_value'))
+	-> condition('synonyms_synonyms_value','%%'.$string.'%%','LIKE')
+    	//-> range(0, 10)
+	-> execute();
+
+	foreach($result as $syn) {
+		$t = taxonomy_term_load($syn->entity_id);
+		//$matches[$syn->synonyms_synonyms_value] = check_plain($syn->synonyms_synonyms_value);
+		//$matches[$t->name."[$syn->synonyms_synonyms_value]"] = check_plain($syn->synonyms_synonyms_value);
+		//$matches[$syn->synonyms_synonyms_value] = check_plain($t->name);
+	}
+
+	drupal_json_output($matches);
+}
+	
+function islandora_arteleku_autoridades_validate($field) {
+	$vid = 2;
+	if (!existe_taxonomy($vid,$field["#value"])) {	
+		form_set_error("autoridades",t("{$field["#value"]} no es una autoridad válida")); 
+	}
+	
+}
+
+function islandora_arteleku_topic_validate($field) {
+	$vid = 5;
+	if (!existe_taxonomy($vid,$field["#value"]["topic_text"])) {	
+		form_set_error('topic validate',t("<strong>{$field["#value"]["topic_text"]}</strong> no es una temática válida. <br/>Crea la temática antes de editar el documento. <a target='_blank' href='@url'>Crear tematica</a>",array("@url" => url('admin/structure/taxonomy/tem_ticas/add')))); 
+	}	
+}
+
+function islandora_arteleku_relator_validate($field) {
+	$vid = 3;
+	if (!existe_taxonomy($vid,$field["#value"])) {	
+		form_set_error('relator validate',t("<strong>{$field["#value"]}</strong> no es un rol válido. <br/>Crea el rol antes de editar el documento. <a target='_blank' href='@url'>Crear rol</a>",array("@url" => url('admin/structure/taxonomy/marcrelators/add')))); 
+	}
+}
+
+function islandora_arteleku_term_validate($field,$vid) {
+	if (!existe_taxonomy($vid,$field["#value"])) {	
+		form_set_error(NULL,t("{$field["#value"]} no es válido")); 
+	}
+}
+
+function existe_taxonomy($vid,$value) {
+	if ($value=="") { return true; } /* En el caso que sea un valor en blanco y no haya que validarlo */
+	else if (isset($value)) {
+  		$result = db_select('taxonomy_term_data', 't')
+    		-> fields('t', array('tid', 'name'))
+    		-> condition('vid', $vid, '=')
+    		-> condition('name', $value, 'LIKE')
+    		-> execute()
+		-> fetchAll();
+		if (count($result)>0) { return true; }
+		else { return false; }	
+	}
+}
+
+function _islandora_arteleku_loc_relators($string) {
+	$relators = array();
+	$r = new lOC();
+	$it = $r->getRelators()->getIterator();
+	foreach ($it as $item):
+		if (isset($item["<http://www.loc.gov/mads/rdf/v1#authoritativeLabel>"][0]["value"])) : $relators[$item["<http://www.loc.gov/mads/rdf/v1#authoritativeLabel>"][0]["value"]] = check_plain($item["<http://www.loc.gov/mads/rdf/v1#authoritativeLabel>"][0]["value"]); endif;
+	endforeach;
+	drupal_json_output($relators);
+}
+
+function _islandora_arteleku_wikidata_autocomplete($string) {
+	$matches = array();
+
+	$wd = new wikiData();
+	$it = $wd->searchEntities($string)->getIterator();
+        foreach ($it as $item) :
+		$matches[$item['id']] = check_plain($item['label']);
+         endforeach;
+	
+	drupal_json_output($matches);
+}
+
+/**
+ * Theme
+ */
+function islandora_arteleku_theme($existing, $type, $theme, $path) {
+    $t = array(
+	     'autoridades' => array(
+	     	'render element' => 'element',
+		    'file' => 'includes/Autoridades.inc',
+		),
+         'mods_object' => array(
+             'variables' => array('mods' => NULL),
+             'file' => 'includes/theme.inc',
+         ),
+        'modselement' => array(
+            'variables' => array('element' => NULL),
+            'file' => 'includes/theme.inc',
+        ),
+        'modselement__name' => array(
+        'variables' => array('element' => NULL),
+        'file' => 'includes/theme.inc',
+        ),
+        'modselement__titleInfo' => array(
+            'variables' => array('element' => NULL),
+            'file' => 'includes/theme.inc',
+        ),
+        'modselement__part' => array(
+            'variables' => array('element' => NULL, 'title' => FALSE),
+            'file' => 'includes/theme.inc',
+        ),
+        'modselement__tableOfContents' => array(
+            'variables' => array('element' => NULL),
+            'file' => 'includes/theme.inc',
+        )
+	);
+
+    return $t;
+}
+
+/**
+ * This hook allows modules to register XSLT transformations.
+ *
+ * @return array
+ *   An associative array mapping a shortened name to the full path of the
+ *   transformation.
+ */
+function islandora_arteleku_xml_form_builder_get_transforms() {
+    return array(
+        'mods_to_dc_multilingual.xslt' => 'sites/all/modules/islandora_arteleku/transforms/mods_to_dc_multilingual.xslt',
+    );
+}
+
+
+function islandora_arteleku_islandora_sp_pdf_islandora_object_modified($object) {
+  //dpm(t("El objeto ha sido editado correctamente"));
+  //error_log("MODIFIED");
+  watchdog("en hook","entrando..");
+  if (!$object) { dpm(t('No hay objecto a actualizar')); }
+  $pid = $object->id;
+  $mods = $object['MODS'];
+  
+  $mods_doc = new DomDocument();
+  global $base_url;
+  if (!empty($mods->content) && $mods_doc->loadXML($mods->content)) :
+	//dpm(t("Cargamos el XML"));
+	$n_list = $mods_doc->getElementsByTagNameNS('http://www.loc.gov/mods/v3','name');
+	foreach ($n_list as $n) {
+		
+		//dpm(t("Existe name"));
+		$name = "sin_nombre";
+		$np_list = $n->getElementsByTagNameNS('http://www.loc.gov/mods/v3','namePart');
+		foreach ($np_list as $np) { $name = $np->nodeValue; }
+		$result = db_select('taxonomy_term_data', 't')
+    		-> fields('t', array('tid', 'name'))
+    		-> condition('vid', 2, '=')
+    		-> condition('name', $name, 'LIKE')
+    		-> execute();
+		foreach ($result as $r) { $valueURI = $r->tid; }
+		//dpm(t("El value uri es {$valueURI}"));
+		$n->setAttribute('valueURI',"http://artxibo.arteleku.net/taxonomy/term/{$valueURI}");
+
+		// El ValueURI de RoleTerm para identificarlo en las taxonomias de islandora	
+		$r_list = $n->getElementsByTagNameNS('http://www.loc.gov/mods/v3','role');
+		foreach ($r_list as $rl) {
+			$rt = $rl->getElementsByTagNameNS('http://www.loc.gov/mods/v3','roleTerm');
+			foreach ($rt as $r):
+			$r->nodeValue;
+			$result = db_select('taxonomy_term_data','t')
+			-> fields('t',array('tid','name'))
+			-> condition('vid',3,'=')
+			-> condition('name',$role_name,'LIKE')
+			-> execute();
+			foreach ($result as $r) { $valueURI = $r->tid; }
+			$r->setAttribute('valueURI',"http:/artxibo.arteleku.net/taxonomy/term/{$valueURI}");
+			endforeach;
+		}
+	}
+	
+	$string = $mods_doc->saveXML();
+	$mods->setContentFromString($string);
+  	$object->ingestDatastream($mods);
+   else :
+	//dpm(t("No he encontrado un xml valido")); 
+   endif;
+}
+
+function islandora_arteleku_islandora_sp_pdf_islandora_object_ingested($object) {
+  if (!$object) { dpm(t('No hay objecto a actualizar')); }
+  $pid = $object->id;
+  $mods = $object['MODS'];
+
+  $mods_doc = new DomDocument();
+  global $base_url;
+  if (!empty($mods->content) && $mods_doc->loadXML($mods->content)) :
+	$loc = $mods_doc->createElement("location");
+	$url = $mods_doc->createElement("url",$base_url.'/islandora/object/'.$pid);
+	$loc->appendChild($url);
+
+
+	$m_list = $mods_doc->getElementsByTagNameNS('http://www.loc.gov/mods/v3', 'mods');
+	foreach ($m_list as $n) :
+		$n->appendChild($loc);
+	endforeach;
+
+	// Creamos los URIs a los namePart
+	$n_list = $mods_doc->getElementsByTagNameNS('http://www.loc.gov/mods/v3','name');
+	foreach ($n_list as $n) {
+		
+		$name = "sin_nombre";
+		$np_list = $n->getElementsByTagNameNS('http://www.loc.gov/mods/v3','namePart');
+		foreach ($np_list as $np) { $name = $np->nodeValue; }
+		$result = db_select('taxonomy_term_data', 't')
+    		-> fields('t', array('tid', 'name'))
+    		-> condition('vid', 2, '=')
+    		-> condition('name', $name, 'LIKE')
+    		-> execute();
+		foreach ($result as $r) { $valueURI = $r->tid; }
+		$n->setAttribute('valueURI',"http://artxibo.arteleku.net/taxonomy/term/{$valueURI}");
+
+		// El ValueURI de RoleTerm para identificarlo en las taxonomias de islandora	
+		$r_list = $n->getElementsByTagNameNS('http://www.loc.gov/mods/v3','roleTerm');
+		foreach ($r_list as $r) {
+			$r->nodeValue;
+			$result = db_select('taxonomy_term_data','t')
+			-> fields('t',array('tid','name'))
+			-> condition('vid',3,'=')
+			-> condition('name',$role_name,'LIKE')
+			-> execute();
+			foreach ($result as $r) { $valueURI = $r->tid; }
+			$r->setAttribute('valueURI',"http:/artxibo.arteleku.net/taxonomy/term/{$valueURI}");
+		}
+	}
+
+
+	
+	$string = $mods_doc->saveXML();
+	$mods->setContentFromString($string);
+  	$object->ingestDatastream($mods);
+ else :
+	dpm(t("No existe un XML válido")); 
+ endif;
+}
+
+
+
+?>

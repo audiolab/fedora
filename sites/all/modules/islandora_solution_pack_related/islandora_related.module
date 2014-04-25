@@ -1,0 +1,456 @@
+<?php
+
+
+define('ISLANDORA_RELATED_CMODEL', 'islandora:relatedCModel');
+
+/**
+ * Implements hook_menu().
+ */
+function islandora_related_menu() {
+    $items = array();
+    $items['admin/islandora/related'] = array(
+        'title' => 'Compound objects',
+        'access arguments' => array('administer compound relationships'),
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('islandora_related_admin_form'),
+        'file' => 'includes/admin.form.inc',
+        'type' => MENU_NORMAL_ITEM,
+    );
+    $items['islandora/object/%islandora_object/manage/related'] = array(
+        'title' => 'Related',
+        'page callback' => 'islandora_related_manage',
+        'page arguments' => array(2),
+        'access callback' => 'islandora_related_access',
+        'access arguments' => array(2),
+        'file' => 'includes/manage.form.inc',
+        'type' => MENU_LOCAL_TASK,
+    );
+    $items['islandora_related/autocomplete'] = array(
+        'page callback' => 'islandora_related_autocomplete_child',
+        'page arguments' => array(2),
+        'access arguments' => array('administer compound relationships'),
+        'type' => MENU_CALLBACK,
+    );
+    return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function islandora_related_permission() {
+    return array(
+        'administer compound relationships' => array(
+            'title' => t('Administer compound object relationships'),
+            'description' => t('Add a child to a parent.'),
+        ),
+    );
+}
+
+/**
+ * Access callback for compound object management.
+ */
+function islandora_related_access(AbstractObject $object) {
+    return islandora_object_access('administer compound relationships', $object);
+}
+
+/**
+ * Implements hook_islandora_required_objects().
+ */
+function islandora_related_islandora_required_objects(IslandoraTuque $connection) {
+    $module_path = drupal_get_path('module', 'islandora_related');
+
+    $related_content_model = $connection->repository->constructObject(ISLANDORA_RELATED_CMODEL);
+    $related_content_model->owner = 'fedoraAdmin';
+    $related_content_model->label = 'Islandora Related Object Content Model';
+    $related_content_model->models = 'fedora-system:ContentModel-3.0';
+
+    $datastream = $related_content_model->constructDatastream('DS-COMPOSITE-MODEL', 'X');
+    $datastream->label = 'DS-COMPOSITE-MODEL';
+    $datastream->mimetype = 'text/xml';
+    $datastream->setContentFromFile("$module_path/xml/islandora_related_ds_composite_model.xml", FALSE);
+    $related_content_model->ingestDatastream($datastream);
+
+    return array(
+        'islandora_compound_object' => array(
+            'title' => 'Islandora related object',
+            'objects' => array(
+                $related_content_model,
+            ),
+        ),
+    );
+}
+
+/**
+ * Autocomplete callback for object search.
+ */
+function islandora_related_autocomplete_child($string) {
+    $matches = array();
+    $islandora_tuque = new IslandoraTuque();
+    $results = $islandora_tuque->api->a->findObjects('terms', '*' . $string . '*', 10);
+
+    foreach ($results['results'] as $result) {
+        // Empty array elements getting sent through.
+        if (is_array($result['title'])) {
+            $title = $result['title'][0];
+        }
+        else {
+            $title = $result['title'];
+        }
+        $matches[$result['pid']] = $title . ' (' . $result['pid'] . ')';
+    }
+    drupal_json_output($matches);
+}
+
+/**
+ * Return an array of pids that are part of a compound object.
+ */
+function islandora_related_get_parts($object, $ret_title = FALSE, $type = "parent") {
+    if(empty($object)){return;}
+    $rels_predicate = islandora_related_predicates($type);
+    $objects = array();
+    $results = array();
+    $connection = islandora_get_tuque_connection();
+    $escaped_pid = str_replace(':', '_', $object->id);
+    $pid = $object->id;
+    foreach($rels_predicate as $key => $predicate){
+        if(isset($object->relationships)){
+            $related = $object->relationships->get('info:fedora/fedora-system:def/relations-external#', $predicate );
+            if(!empty($related)){
+                $results[$predicate] = $related;
+            }
+        }
+    }
+    if ($ret_title){
+        foreach($results as $predicate => $list){
+            foreach($list as $key => $result){
+                //$results[$predicate][$key]
+                $object = islandora_object_load($result['object']['value']);
+                //dpm(get_class_methods($object));
+                //dpm($object->label);
+		if ( isset($object->label) && isset($object->id) ) {
+                	$objects[$predicate][$object->id] = array(
+                    	'title' => $object->label,
+                    	'pid' => $object->id,
+                    	'predicate' => $predicate,
+                	);
+		}
+            }
+        }
+    }
+
+/*
+ *
+ *
+ *
+ *
+ *
+ *
+
+
+  if ($connection) {
+    $results = $connection->repository->ri->sparqlQuery($query);
+
+
+        // Sort the objects into their proper order.
+        $sort = function($a, $b) {
+            $a = $a['seq']['value'];
+            $b = $b['seq']['value'];
+            if ($a === $b) {
+                return 0;
+            }
+            if (empty($a)) {
+                return 1;
+            }
+            if (empty($b)) {
+                return -1;
+            }
+            return $a - $b;
+        };
+        uasort($results, $sort);
+
+        foreach ($results as $result) {
+            if ($ret_title) {
+                $objects[$result['object']['value']] = array(
+                    'pid' => $result['object']['value'],
+                    'title' => $result['title']['value'],
+                    'seq' => $result['seq']['value'],
+                );
+            }
+            else {
+                $objects[] = $result['object']['value'];
+            }
+        }
+    }*/
+
+    return $objects;
+    //return $results;
+}
+
+function islandora_related_link_correspondence($type = 'parent', $source, $destiny, $predicate){
+    $cor_predicate = islandora_related_correspondence($type, $predicate);
+    $source->relationships->add('info:fedora/fedora-system:def/relations-external#', $cor_predicate, $destiny->id);
+}
+
+function islandora_related_correspondence($type = "parent", $predicate = 'hasPart'){
+    $pred = array(
+        'parent' => array(
+            'hasPart'               => 'isPartOf',
+            'hasConstituent'        => 'isConstituentOf',
+            'hasMember'             => 'isMemberOf',
+            'hasSubset'             => 'isSubsetOf',
+            'hasDerivation'         => 'isDerivationOf',
+            'hasDependent'          => 'isDependentOf',
+            'HasDescription'        => 'isDescriptionOf',
+            'HasMetadata'           => 'isMetadataFor',
+            'HasAnnotation'         => 'isAnnotationOf',
+            'hasEquivalent'         => 'isEquivalentOf',
+            'hasVersion'            => 'isVersionOf',
+
+        ),//parent
+        'children' => array(
+            'isPartOf'              => 'hasPart',
+            'isConstituentOf'       => 'hasConstituent',
+            'isMemberOf'            => 'hasMember',
+            'isSubsetOf'            => 'hasSubset',
+            'isDerivationOf'        => 'hasDerivation',
+            'isDependentOf'         => 'hasDependent',
+            'isDescriptionOf'       => 'HasDescription',
+            'isMetadataFor'         => 'HasMetadata',
+            'isAnnotationOf'        => 'HasAnnotation',
+            'isEquivalentOf'        => 'HasEquivalent',
+            'isVersionOf'           => 'HasVersion',
+        ),//children
+    );
+
+    return $pred[$type][$predicate];
+}
+
+function islandora_related_predicate_to_text($predicate){
+    $pred = array(
+            'hasPart'               => t('hasPart'),
+            'hasConstituent'        => t('hasConstituent'),
+            'hasMember'             => t('hasMember'),
+            'hasSubset'             => t('hasSubset'),
+            'hasDerivation'         => t('hasDerivation'),
+            'hasDependent'          => t('hasDependent'),
+            'HasDescription'        => t('HasDescription'),
+            'HasMetadata'           => t('HasMetadata'),
+            'HasAnnotation'         => t('HasAnnotation'),
+            'hasEquivalent'         => t('hasEquivalent'),
+            'isPartOf'              => t('isPartOf'),
+            'isConstituentOf'       => t('isConstituentOf'),
+            'isMemberOf'            => t('isMemberOf'),
+            'isSubsetOf'            => t('isSubsetOf'),
+            'isDerivationOf'        => t('isDerivationOf'),
+            'isDependentOf'         => t('isDependentOf'),
+            'isDescriptionOf'       => t('isDescriptionOf'),
+            'isMetadataFor'         => t('isMetadataFor'),
+            'isAnnotationOf'        => t('isAnnotationOf'),
+            'isEquivalentOf'        => t('isEquivalentOf'),
+            'isVersionOf'           => t('isVersionOf'),
+    );
+
+    return $pred[$predicate];
+}
+
+
+function islandora_related_predicates($type = "parent"){
+    $pred = array(
+        'parent' => array(
+            'hasPart'               => 'hasPart',
+            'hasConstituent'        => 'hasConstituent',
+            'hasMember'             => 'hasMember',
+            'hasSubset'             => 'hasSubset',
+            'hasDerivation'         => 'hasDerivation',
+            'hasDependent'          => 'hasDependent',
+            'HasDescription'        => 'HasDescription',
+            'HasMetadata'           => 'HasMetadata',
+            'HasAnnotation'         => 'HasAnnotation',
+            'hasEquivalent'         => 'hasEquivalent',
+            'hasVersion'            => 'hasVersion',
+
+        ),//parent
+        'children' => array(
+            'isPartOf'              => 'isPartOf',
+            'isConstituentOf'       => 'isConstituentOf',
+            'isMemberOf'            => 'isMemberOf',
+            'isSubsetOf'            => 'isSubsetOf',
+            'isDerivationOf'        => 'isDerivationOf',
+            'isDependentOf'         => 'isDependentOf',
+            'isDescriptionOf'       => 'isDescriptionOf',
+            'isMetadataFor'         => 'isMetadataFor',
+            'isAnnotationOf'        => 'isAnnotationOf',
+            'isEquivalentOf'        => 'isEquivalentOf',
+            'isVersionOf'           => 'isVersionOf',
+        ),//children
+    );
+
+    return $pred[$type];
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function islandora_related_block_info() {
+    $blocks['related_list'] = array(
+        'info' => t('Islandora Related Display'),
+        'visibility' => BLOCK_VISIBILITY_LISTED,
+        'pages' => 'islandora/object/*',
+    );
+    return $blocks;
+}
+
+/**
+ * Implements hook_block_configure().
+ *
+ * This hook declares configuration options for blocks provided by this module.
+ *
+function islandora_related_block_configure($delta = '') {
+    // The $delta parameter tells us which block is being configured.
+    // In this example, we'll allow the administrator to customize
+    // the text of the 'configurable text string' block defined in this module.
+
+    $form = array();
+    if ($delta == 'related_list') {
+        // All we need to provide is the specific configuration options for our
+        // block. Drupal will take care of the standard block configuration options
+        // (block title, page visibility, etc.) and the save button.
+        $form['related_list_type'] = array(
+            '#type' => 'select',
+            '#title' => t('Type of relations'),
+            '#options' => array('parent' => t('Parent'), 'children' => t('Children')),
+            '#default_value' => 'parent',
+        );
+    }
+    return $form;
+}
+
+
+/**
+ * Implements hook_block_save().
+ *
+ * This hook declares how the configured options for a block
+ * provided by this module are saved.
+ *
+function islandora_related_block_save($delta = '', $edit = array()) {
+    // We need to save settings from the configuration form.
+    // We need to check $delta to make sure we are saving the right block.
+    if ($delta == 'related_list') {
+        // Have Drupal save the string to the database.
+        variable_set('block_example_string', $edit['related_list_type']);
+    }
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function islandora_related_block_view($delta = '') {
+    switch ($delta) {
+        case 'related_list':
+            $block['subject'] = t('Related items');
+            $block['content'] = islandora_related_list_block();
+    }
+
+    return $block;
+}
+
+/**
+ * Render navigation block.
+ */
+function islandora_related_list_block() {
+    module_load_include('inc', 'islandora', 'includes/utilities');
+    drupal_add_css(drupal_get_path('module', 'islandora_related') . '/css/islandora_related.block.css');
+    if (arg(1) == 'object' && islandora_is_valid_pid(arg(2))) {
+
+        $pid = arg(2);
+        $object = islandora_object_load($pid);
+
+        $children = islandora_related_get_parts($object, TRUE, 'children'); //the actual oject is children
+        $parent = islandora_related_get_parts($object, TRUE, 'parent'); //the actual object is parent
+
+        $output = '';
+        if ($object && (!empty($children) || !empty($parent))) {
+
+            if(!empty($children)){
+               foreach($children as $predicate => $childs){
+                   $pred = islandora_related_predicate_to_text($predicate);
+                   $items = array();
+                   foreach ($childs as $child){
+                        $obj = islandora_object_load($child['pid']);
+                        $items[] = theme('islandora_preview', array('islandora_object' => $obj));
+                   }
+                   $output .= theme_item_list(array(
+                       'title' => $pred,
+                       'type' => 'ul',
+                       'items' => $items,
+                       'attributes' => array('id' => "related-$predicate", 'class' => 'related-objects-list')
+                   ));
+               }
+
+            }
+
+            if(!empty($parent)){
+                foreach($parent as $predicate => $parents){
+                    $pred = islandora_related_predicate_to_text($predicate);
+                    $items = array();
+                    foreach ($parents as $par){
+                        $obj = islandora_object_load($par['pid']);
+                        $items[] = theme('islandora_preview', array('islandora_object' => $obj));
+                    }
+                    $output .= theme_item_list(array(
+                        'title' => $pred,
+                        'type' => 'ul',
+                        'items' => $items,
+                        'attributes' => array('id' => "related-$predicate", 'class' => 'related-objects-list')
+                    ));
+                }
+
+            }
+
+          /*  $rels_predicate = variable_get('islandora_compound_object_relationship', 'isPartOf');
+            $part_of = $object->relationships->get('info:fedora/fedora-system:def/relations-external#', $rels_predicate);
+
+            // This object is part of a compound object.
+            if (!empty($part_of)) {
+                // Go through all parents.
+                foreach ($part_of as $part) {
+                    $parent_pid = $part['object']['value'];
+                    $parent = islandora_object_load($parent_pid);
+
+                    $siblings = islandora_compound_object_get_parts($parent_pid);
+                    $current_key = array_search($object->id, $siblings);
+
+                    $previous_pid = (isset($siblings[$current_key - 1])) ? $siblings[$current_key - 1] : '';
+                    $next_pid = (isset($siblings[$current_key + 1])) ? $siblings[$current_key + 1] : '';
+
+                    // Check if perms to show link for parent manage.
+                    if (islandora_object_manage_access_callback(array(
+                        FEDORA_METADATA_EDIT, FEDORA_MANAGE_PROPERTIES, FEDORA_ADD_DS), $parent)) {
+                        $parent_url = 'islandora/object/' . $parent_pid . '/manage';
+                    }
+                    else {
+                        $parent_url = FALSE;
+                    }
+
+                    $prev_next = theme('islandora_compound_prev_next',
+                        array(
+                            'parent_label' => $parent->label,
+                            'parent_url' => $parent_url,
+                            'previous_pid' => $previous_pid,
+                            'next_pid' => $next_pid,
+                            'child_count' => count($siblings),
+                            'siblings' => $siblings,
+                            'pid' => $pid,
+                        ));
+
+                    $output .= $prev_next;
+                }
+            }
+
+            if (!empty($output)) {
+                return array('#markup' => $output);
+            }*/
+        }
+    }
+    return $output;
+}

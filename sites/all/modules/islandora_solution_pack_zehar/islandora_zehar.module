@@ -1,0 +1,58 @@
+<?php
+
+/**
+ * @file
+ *
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function islandora_zehar_menu() {
+  /*  return array(
+        'admin/islandora/pdf' => array(
+            'title' => 'PDF Collection',
+            'description' => 'Configure the PDF Solution Pack.',
+            'page callback' => 'drupal_get_form',
+            'access arguments' => array('administer site configuration'),
+            'page arguments' => array('islandora_pdf_admin'),
+            'file' => 'includes/admin.form.inc',
+            'type' => MENU_NORMAL_ITEM,
+        )
+    );*/
+}
+
+
+/**
+ * Implements hook_islandora_required_objects().
+ */
+function islandora_zehar_islandora_required_objects(IslandoraTuque $connection) {
+    $module_path = drupal_get_path('module', 'islandora_zehar');
+    // Zehar Collection
+    $zehar_collection = $connection->repository->constructObject('islandora:zehar_collection');
+    $zehar_collection->owner = 'fedoraAdmin';
+    $zehar_collection->label = 'Zehar Collection';
+    $zehar_collection->models = 'islandora:collectionCModel';
+    $zehar_collection->relationships->add(FEDORA_RELS_EXT_URI, 'isMemberOfCollection', 'islandora:root');
+    // Collection Policy Datastream
+    $datastream = $zehar_collection->constructDatastream('COLLECTION_POLICY', 'X');
+    $datastream->label = 'Collection policy';
+    $datastream->mimetype = 'text/xml';
+    $datastream->setContentFromFile("$module_path/xml/islandora_zehar_collection_policy.xml", FALSE);
+    $zehar_collection->ingestDatastream($datastream);
+    // TN Datastream
+    $datastream = $zehar_collection->constructDatastream('TN', 'M');
+    $datastream->label = 'Thumbnail';
+    $datastream->mimetype = 'image/png';
+    $datastream->setContentFromFile("$module_path/images/folder.png", FALSE);
+    $zehar_collection->ingestDatastream($datastream);
+    return array(
+        'islandora_zehar' => array(
+            'title' => 'Islandora Zehar',
+            'objects' => array(
+                $zehar_collection
+            )
+        )
+    );
+}
+

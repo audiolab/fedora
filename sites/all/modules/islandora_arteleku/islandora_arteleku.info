@@ -1,0 +1,6 @@
+name = "Islandora Arteleku"
+description = "Tools for addapt Islandora 7.x Arteleku Artxibo"
+dependencies[] = islandora
+package = Islandora
+core = 7.x
+version = 7.x-1.2

@@ -1,0 +1,6 @@
+name = "Islandora Preview"
+description = "Introduce el hook PREVIEW para los solution packs"
+dependencies[] = islandora
+package = Islandora
+core = 7.x
+version = 7.x-1.2

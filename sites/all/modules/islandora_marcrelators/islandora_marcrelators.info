@@ -1,0 +1,8 @@
+name = Islandora MARCRelators
+description = "Implementa el vocabulario Marc Relators."
+dependencies[] = islandora
+package = Islandora
+version = 7.x-1.2
+core = 7.x
+php = 5.3
+

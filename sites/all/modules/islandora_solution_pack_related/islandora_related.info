@@ -1,0 +1,6 @@
+name = Islandora related object
+description = Módulo para añadir relaciones de distintos tipos entre los objetos subidos al repositorio.
+dependencies[] = islandora
+package = Islandora
+configure = admin/islandora/compound_object
+core = 7.x

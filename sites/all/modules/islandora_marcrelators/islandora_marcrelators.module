@@ -1,0 +1,47 @@
+<?php
+
+define('ISLANDORA_MARCRELATORS', 'marcrelators');
+
+function islandora_marcrelators_import(){
+
+    //Checkeo si existe la taxonomia y cojo el ID
+
+    $tax = taxonomy_vocabulary_machine_name_load(ISLANDORA_MARCRELATORS);
+    if(!$tax){return;}
+
+    $rdf = new DOMDocument();
+    $file_path = drupal_get_path('module', 'islandora_marcrelators') . '/xml/marcrelators.rdf';
+    $rdf->load($file_path);
+    $rxPath = new DOMXPath($rdf);
+    $rxPath->registerNamespace('madsrdf', 'http://www.loc.gov/mads/rdf/v1#');
+    $entries = $rxPath->query('//madsrdf:Authority');
+    dpm($entries);
+    $vocab = array();
+    if (!is_null($entries)) {
+        foreach ($entries as $element) {
+            $name = $rxPath->query('madsrdf:authoritativeLabel', $element)->item(0)->nodeValue;
+            $code = $rxPath->query('madsrdf:code', $element)->item(0)->nodeValue;
+            $vocab[$code] = $name;
+            $term = new stdClass();
+            $term->vid = $tax->vid;
+            $term->name = $name;
+            $term->field_authority_code[LANGUAGE_NONE][0]['value'] = $code;
+            taxonomy_term_save($term);
+        }
+    }
+    dpm($vocab);
+    return "dsf";
+
+}
+
+function islandora_marcrelators_menu() {
+    $items = array();
+    $items['admin/config/marcrelators'] = array(
+        'title' => 'Islandora Marc Relators Vocabulary',
+        'description' => "Update Marc Relators taxonomy.",
+        'access arguments' => array('administer site configuration'),
+        'page callback' => 'islandora_marcrelators_import',
+    );
+    return $items;
+}
+

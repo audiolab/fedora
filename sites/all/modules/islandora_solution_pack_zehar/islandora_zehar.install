@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * islandora_zehar.install
+ */
+
+/**
+ * Implements hook_install().
+ *
+ * @see islandora_zehar_islandora_required_objects()
+ */
+function islandora_zehar_install() {
+    module_load_include('inc', 'islandora', 'includes/solution_packs');
+    islandora_install_solution_pack('islandora_zehar');
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function islandora_zehar_uninstall() {
+    module_load_include('inc', 'islandora', 'includes/solution_packs');
+    islandora_install_solution_pack('islandora_zehar', 'uninstall');
+}

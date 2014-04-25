@@ -1,0 +1,174 @@
+
+div.toboggan-container {
+
+}
+
+div.toboggan-login-link-container {
+  text-align: left;
+}
+
+div.toboggan-login-link-container a {
+  text-decoration: none;
+}
+
+div.toboggan-block-message {
+  text-align: left;
+}
+
+div.user-login-block {
+  text-align: left;
+}
+
+div.user-login-block a {
+  text-align: left;
+}
+
+div.toboggan-unified{
+  width:770px;
+  border-top: 2px solid black;
+}
+
+/* Unified login */
+
+.toboggan-unified #login-message h3{
+  margin: 9px 0 9px 10px;
+}
+
+.toboggan-unified #login-wrapper{
+border-top: 1px solid black;
+  padding-top: 9px;
+  padding-left: 10px;
+}
+
+.toboggan-unified #login-links {
+  margin-bottom: 20px;
+}
+
+.toboggan-unified #login-links a {
+  display: inline-block;
+  background-color: rgb(249,229,220);
+  display: inline-block;
+  font-family: 'Droid Sans Mono', sans-serif;
+  font-size: 12px;
+  margin: 0;
+  margin: 0px 10px 0px 0;
+  padding: 5px 10px;
+  text-transform: uppercase;
+}
+
+.toboggan-unified #login-links a:hover {
+  background-color: red;
+  color: white;
+}
+
+.toboggan-unified #login-links a.lt-active,
+.toboggan-unified #login-links a.lt-active:hover {
+  background-color: red;
+  color: white;
+
+}
+
+.toboggan-unified.login #register-form {
+  display: none;
+}
+
+.toboggan-unified.register #login-form {
+  display: none;
+}
+
+.toboggan-unified .login-forgot{
+  float: left;
+  margin-right: 30px;
+}
+
+.toboggan-unified .login-forgot a{
+  background-color:rgb(110,255,175);
+  padding: 10px;
+  color:black;
+    font-family: 'Droid Sans Mono', sans-serif;
+  font-size: 12px;
+  line-height: 15px;
+  display: inline-block;
+  text-transform: uppercase;
+}
+
+/*		Default Layout: 1200px.
+		Gutters: 30px.
+		Outer margins: 0px.
+		Leftover space for scrollbars @1024px: 32px.
+-------------------------------------------------------------------------------
+cols    1     2      3      4      5      6      7      8      9      10	11		12
+px      70    170    270    370    470    570    670    770    870    970	1070	1170 */
+
+
+@media (min-width: 1200px) {
+
+
+}
+
+/*		Tablet Layout: 770px.
+		Gutters: 24px.
+		Outer margins: 28px.
+		Inherits styles from: Default Layout.
+-----------------------------------------------------------------
+cols    1     2      3      4      5      6      7      8
+px      68    160    252    344    436    528    620    712    */
+
+@media only screen and (min-width: 770px) and (max-width: 991px) {
+
+div.toboggan-unified{
+  width:570px;
+}
+
+}
+
+
+
+/*		Mobile Layout: 320px.
+		Gutters: 24px.
+		Outer margins: 34px.
+		Inherits styles from: Default Layout.
+---------------------------------------------
+cols    1     2      3
+px      68    160    252    */
+
+@media only screen and (max-width: 569px) {
+	div.toboggan-unified{
+	  width:270px;
+	}
+	.form-item input{
+		width: 240px;
+	}
+	.toboggan-unified #login-links a,
+	.toboggan-unified .login-forgot a  {
+		margin-bottom: 10px;
+	}
+}
+
+
+
+/*		Wide Mobile Layout: 570px.
+		Gutters: 24px.
+		Outer margins: 22px.
+		Inherits styles from: Default Layout, Mobile Layout.
+------------------------------------------------------------
+cols    1     2      3      4      5
+px      68    160    252    344    436    */
+
+@media only screen and (min-width: 570px) and (max-width: 769px) {
+	div.toboggan-unified{
+	  width:370px;
+	}
+	.form-item input{
+		width: 340px;
+	}
+	.toboggan-unified #login-links a,
+	.toboggan-unified .login-forgot a {
+		margin-bottom: 10px;
+	}
+	
+	
+}
+
+}
+

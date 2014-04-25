@@ -1,0 +1,30 @@
+.views-accordion-header{
+  background:none;
+  border: 0;
+  font-family: 'Droid Sans Mono', sans-serif;
+  border-radius: 0;
+}
+
+.ui-accordion{
+
+  font-size: 12px;
+  font-family: 'Droid Sans Mono', sans-serif;
+}
+.ui-accordion .views-row{
+  padding: 0;
+}
+
+.ui-accordion-content{
+  background:none;
+  border: 0;
+  overflow: hidden;
+}
+.ui-accordion .ui-accordion-header a{
+  color:black;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.views-accordion-header.ui-state-active{
+  background-color: rgb(249,229,220);
+}

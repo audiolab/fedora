@@ -1,0 +1,516 @@
+/*	Resets
+	------	*/
+
+html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6,
+p, blockquote, pre, a, abbr, address, cite, code, del, dfn, em,
+img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, hr,
+dl, dt, dd, ol, ul, li, fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figure, figcaption, hgroup,
+menu, footer, header, nav, section, summary, time, mark, audio, video { border: 0; margin: 0; padding: 0; }
+
+article, aside, canvas, figure, figure img, figcaption, hgroup,
+footer, header, nav, section, audio, video { display: block; }
+
+a img { border: 0; }
+
+* {
+	-webkit-transition: all .4s ease;
+	-o-transition: all .4s ease;
+	-moz-transition: all .4s ease;
+	transition: all .4s ease;
+}
+
+#featured *{
+	-moz-transition: none;
+    -webkit-transition: none;
+    -o-transition: color 0 ease-in;
+    transition: none;
+}
+
+#grid{
+	width: 970px;
+	position: absolute;
+	top: 0;
+	z-index: -106;
+	background-image: url('grid.png');
+	height: 5000px;
+	display: none;
+}
+
+/*		Default Layout: 970px.
+		Gutters: 30px.
+		Outer margins: 30px.
+		Leftover space for scrollbars @1024px: 32px.
+-------------------------------------------------------------------------------
+cols    1     2      3      4      5      6      7      8      9      10
+px      70    170    270    370    470    570    670    770    870    970    */
+
+
+body {
+	-webkit-text-size-adjust: 100%; /* Stops Mobile Safari from auto-adjusting font-sizes */
+	background: rgb(248,248,235);
+	color: rgb(0,0,0);
+	line-height: 20px;
+	margin: 0 auto;
+	padding: 0px 0px 80px 0px;
+	width: 970px;
+}
+
+header {
+	background: rgb(248,248,235);
+	height: 119px;
+	margin-left: 200px;
+	padding: 40px 0 0;
+	position: fixed;
+	z-index: 101;
+}
+
+h1#titulo {
+	float: left;
+	font-size: 12px;
+	font-style: normal;
+	font-weight: normal;
+	letter-spacing: 0;
+	line-height: 20px;
+	margin-right: 30px;
+	padding: 0 0 0 10px;
+	width: 160px;
+}
+
+#block-locale-language-content { float: left; margin-right: 30px; width: 170px; }
+
+#block-locale-language-content ul li { float: left; list-style: none; padding: 0 8px; }
+#block-apachesolr-panels-search-form {
+	border-bottom: 1px solid #000;
+	float: left;
+	height: 31px;
+	width: 170px;
+}
+#block-apachesolr-panels-search-form .form-actions,
+#block-apachesolr-panels-search-form .form-item{
+	margin-bottom: 0;
+	margin-top: 0;
+}
+#bloque-tools {
+	border-top: 2px solid #000;
+	float: left;
+	margin-right: 30px;
+	padding: 7px 0 2px 0;
+	width: 570px;
+}
+#bloque-social{
+	height: 36px;
+	background-color:rgb(248,248,235);
+	float: left;
+	width: 170px;
+}
+#bloque-login { border-top: 2px solid #000; float: left; width: 170px; }
+#bloque-login-link {
+	border-bottom: 1px solid black;
+	float: right;
+	font-family: 'Droid Sans Mono', sans-serif;
+	font-size: 12px;
+	height: 27px;
+	padding: 8px 0 3px 0px;
+	width: 170px;
+}
+
+#block-apachesolr-panels-search-form .form-text {
+	background-color: rgb(248,248,235);
+	border: 0;
+	height: 20px;
+	width: 138px;
+	text-transform: uppercase;
+	font-family: 'Droid Sans Mono', sans-serif;
+	font-size: 12px
+}
+#bloque-login-link a{margin-left: 10px;}
+#white-space { height: 160px; }
+#page { clear: both; }
+#sidebar {
+	font-family: 'Droid Sans Mono', sans-serif;
+	font-size: 12px;
+	letter-spacing: 1px;
+	position: absolute;
+	top: 40px;
+	width: 170px;
+	z-index: 100;
+}
+#menu-mobile{display: none;}
+#sidebar .block { margin-bottom: 40px; }
+
+#logotipo {
+	margin-bottom: 82px;
+	margin-left: 10px;
+	margin-right: 30px;
+	margin-top: 9px;
+	width: 160px;
+}
+#content { padding-left: 200px; width: 770px; }
+.only-mobile { display: none; }
+
+/* Bloques portada_________________*/
+#featured {
+	border-top: 2px solid #000;
+	float: left;
+	height: 398px;
+	margin-right: 30px;
+	position: relative;
+	top: 0;
+	width: 570px;
+}
+
+#object-content{
+	float:left;
+	margin-right:30px;
+	position:relative;
+	top:0;
+	width:570px;
+
+}
+
+#panel-metadata{
+	float:left;
+	width:370px;
+	position:relative;
+}
+
+#panel-info {
+	border-left: 1px solid #000;
+	float: left;
+	font-family: 'Droid Sans Mono', sans-serif;
+	font-size: 14px;
+	height: 395px;
+	line-height: 20px;
+	padding: 5px 0 0 9px;
+	position: relative;
+	width: 159px;
+}
+#panel-news {
+	float: left;
+	margin-right: 30px;
+	margin-top: 40px;
+	position: relative;
+	width: 370px;
+}
+#panel-first {
+	float: left;
+	margin-right: 30px;
+	margin-top: 40px;
+	position: relative;
+	width: 170px;
+}
+#panel-second {
+	float: left;
+	margin-top: 40px;
+	position: relative;
+	width: 170px;
+}
+#footer {
+	clear: both;
+	float: left;
+	margin-left: 200px;
+	margin-top: 120px;
+	position: relative;
+	width: 770px;
+}
+#footer-info { display: none; }
+#footer-logo {
+	border-right: 1px solid #000;
+	float: left;
+	height: 160px;
+	padding-right: 29px;
+	width: 170px;
+}
+.footer-panel {
+	border-right: 1px solid #000;
+	float: left;
+	font-size: 12px;
+	height: 160px;
+	line-height: 15px;
+	padding-left: 10px;
+	padding-right: 29px;
+	width: 160px;
+}
+.footer-panel.last { border-right: 0; padding-right: 0; }
+#footer-credits {
+	font-size: 10px;
+	margin-top: 40px;
+	width: 770px;
+	height: 22px;
+}
+#footer-credits .float-left{
+	padding-left: 10px;
+}
+#footer-credits .float-right{
+	padding-right: 10px;
+	height: 22px;
+}
+#footer-credits a{
+	color: white;
+}
+
+		.show-1200,
+		.show-770,
+		.show-320,
+		.show-570{
+			display: none;
+		}
+		.show-970{
+			display: block;
+		}
+/*		Default Layout: 1200px.
+		Gutters: 30px.
+		Outer margins: 0px.
+		Leftover space for scrollbars @1024px: 32px.
+-------------------------------------------------------------------------------
+cols    1     2      3      4      5      6      7      8      9      10	11		12
+px      70    170    270    370    470    570    670    770    870    970	1070	1170 */
+
+
+@media (min-width: 1200px) {
+	#grid{
+	width: 1170px;
+	}
+		body { width: 1170px; }
+		#content { height: auto; position: relative; width: 970px; }
+
+		.show-970,
+		.show-770,
+		.show-320,
+		.show-570{
+			display: none;
+		}
+		.show-1200{
+			display: block;
+		}
+		#panel-news {
+			left: 800px;
+			margin: 0;
+			position: absolute;
+			top: 0px;
+		}
+
+		#panel-info { left: 200px; position: absolute; top: 440px; }
+
+		#panel-first {
+			left: 400px;
+			margin: 0;
+			position: absolute;
+			top: 440px;
+		}
+		#panel-second {
+			left: 600px;
+			margin: 0;
+			position: absolute;
+			top: 440px;
+		}
+		#footer {
+
+			margin-left: 200px;
+			margin-top: 120px;
+			width: 970px;
+		}
+		#footer-credits { width: 970px; }
+		#bloque-login { width: 370px; }
+		#footer-info { display: block; }
+
+}
+
+/*		Tablet Layout: 770px.
+		Gutters: 24px.
+		Outer margins: 28px.
+		Inherits styles from: Default Layout.
+-----------------------------------------------------------------
+cols    1     2      3      4      5      6      7      8
+px      68    160    252    344    436    528    620    712    */
+
+@media only screen and (min-width: 770px) and (max-width: 991px) {
+#grid{
+	width: 770px;
+	}
+		body { width: 770px; }
+		#bloque-tools { margin-right: 0px; }
+		#bloque-login { clear: both; float: right; width: 170px; border: 0 }
+		#content { position: relative; width: 570px; }
+
+		#footer-credits { width: 570px; }
+		#footer { width: 570px; }
+		#footer-document { display: none; }
+#panel-first, #panel-second{margin-top: 0px;}
+		#panel-info { left: 600px; position: absolute; top: 440px; }
+
+		.show-1200,
+		.show-970,
+		.show-320,
+		.show-570{
+			display: none;
+		}
+		.show-770{
+			display: block;
+		}
+
+
+}
+
+
+
+/*		Mobile Layout: 320px.
+		Gutters: 24px.
+		Outer margins: 34px.
+		Inherits styles from: Default Layout.
+---------------------------------------------
+cols    1     2      3
+px      68    160    252    */
+
+@media only screen and (max-width: 569px) {
+#grid{
+	width: 270px;
+	}
+		h1{
+	font-size: 26px;
+	line-height: 30px;
+}
+		body { width: 270px; }
+		#menu-mobile{display: block;
+			height: 30px;
+			text-align: right;
+			margin-bottom: 10px;
+		}
+		
+		#sidebar { position: static; width: 270px; }
+		#sidebar #logotipo { display: none; }
+		#sidebar ul li { border-bottom: 0; margin-bottom: 10px; }
+		#sidebar ul { }
+		#sidebar ul li.last{
+	border-bottom: 0;
+	margin-bottom: 20px;
+}
+		#sidebar .block{
+			margin-bottom: 10px;
+		}
+		header {
+			margin-left: 0;
+			padding-top: 10px;
+			position: static;
+			width: 270px;
+			height: 70px;
+		}
+
+		h1#titulo{
+			width: 70px;
+			margin-right: 0;
+		}
+		.element-invisible{display: none;}
+		#block-search-form{border: 0; float: right;width: 90px;}
+		.search-form-input{width: 50px;}
+		#block-locale-language-content{margin-right: 0; width: 100px;}
+		#bloque-tools { margin-right: 0; width: 270px; }
+		.no-mobile { display: none; }
+		#white-space { display: none; }
+		#content { clear: all; padding-left: 0; width: 270px; }
+		#featured {
+			height: auto;
+			margin-right: 0;
+			position: static;
+			width: 270px;
+			float: none;
+		}
+		#featured img { width: 270px; }
+		#panel-news {
+			margin-right: 0;
+			margin-top: 20px;
+			position: static;
+			width: 270px;
+			float: none;
+		}
+		#content{height: auto !important;}
+		#footer { margin-left: 0; width: 270px; }
+		#footer-credits { width: 270px; }
+		#footer-document { display: none; }
+		#footer-dir { border-right: 0; display: block; }
+		#footer-links { display: none; }
+		#footer-logo { border-right: 0; height: 80px; }
+		.footer-panel { height: auto; }
+		.only-mobile { display: block; }
+		#panel-info{display: none;}
+		#panel-first{width: 270px; margin-right: 0px; position: static; float: none;}
+		#panel-second{width:270px; margin-right:0px;position: static; float: none;}
+
+		.show-1200,
+		.show-970,
+		.show-770,
+		.show-570{
+			display: none;
+		}
+		.show-320{
+			display: block;
+		}
+
+}
+
+
+
+/*		Wide Mobile Layout: 570px.
+		Gutters: 24px.
+		Outer margins: 22px.
+		Inherits styles from: Default Layout, Mobile Layout.
+------------------------------------------------------------
+cols    1     2      3      4      5
+px      68    160    252    344    436    */
+
+@media only screen and (min-width: 570px) and (max-width: 769px) {
+#grid{
+	width: 570px;
+	}
+	h1{
+	font-size: 26px;
+	line-height: 30px;
+}
+		body { width: 570px; }
+		#bloque-tools { margin-right: 0px; width: 370px; }
+		h1#titulo { width: 60px; }
+		#language { width: 70px; }
+		header { height: 100px; position: static; }
+		#panel-info{display: none;}
+		
+		#bloque-login { clear: both; float: right; width: 170px; border: 0 }
+		#white-space { height: 20px; }
+		#content { width: 370px; }
+		.no-tablet { display: none; }
+		#featured { height: 280px; width: 370px; margin-right: 0; overflow: hidden; }
+		#featured img { width: 370px; height: 240px }
+		#footer { width: 370px; }
+		#footer-credits { width: 370px; }
+		#footer-document { display: none; }
+		#footer-dir { display: none; }
+		#logotipo { margin-bottom: 83px; }
+		#panel-news{margin-right: 0; margin-top: 38px;}
+		#block-locale-language-content{margin-right: 0; width: 100px;}
+		#bloque-social{display: none;}
+		.no-mobile { display: block; }
+
+		.show-1200,
+		.show-970,
+		.show-770,
+		.show-320{
+			display: none;
+		}
+		.show-570{
+			display: block;
+		}
+}
+
+
+/*	Retina media query.
+	Overrides styles for devices with a
+	device-pixel-ratio of 2+, such as iPhone 4.
+-----------------------------------------------    */
+
+@media
+		only screen and (-webkit-min-device-pixel-ratio: 2),
+		only screen and (min-device-pixel-ratio: 2) { }
+
+}
+

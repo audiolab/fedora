@@ -1,0 +1,6 @@
+name = "Islandora Wikidata"
+description = "Gestiona la actualización de entidades contra wikidata"
+dependencies[] = islandora
+package = Islandora
+core = 7.x
+version = 7.x-1.2

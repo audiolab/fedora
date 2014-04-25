@@ -1,0 +1,33 @@
+<?php
+
+function islandora_wikidata_help($path, $arg) {
+	switch ($path) {
+		case "admin/help#islandora_wikidata":
+			return '<p>' . t("Crea una capa para la gestión de entidades con Wikidata") . '</p>';
+		        break;
+	}
+}
+
+/**
+ * Lo trabajamos con un bloque lateral que ofrece posibilidades
+ * */
+function islandora_wikidata_block_info() {
+	$blocks['current_post'] = array(
+		'info' => t('Posibles entidades'),
+		'cache' => DRUPAL_CACHE_PER_ROLE,
+		);
+	return $blocks;
+}
+
+/**
+ * aquí deberíamos checkear las posibles etiquetas del vocabulario ya creadas 
+ * y ofrecer nuevas autoridades recogidas de wikidata en esta primera etapa
+ * Seguramente podamos buscar nuevas bases de consulta para mejorar la búsqueda
+ * */
+
+function islandora_wikidata_check_entity() {
+
+}
+
+?>
+

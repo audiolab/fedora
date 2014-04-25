@@ -1,0 +1,45 @@
+; $Id: bartik.info,v 1.5 2010/11/07 00:27:20 dries Exp $
+
+name = Arteleku
+description = Theme para la web de Arteleku
+package = Core
+version = VERSION
+core = 7.x
+
+stylesheets[all][] = css/tipografia.css
+stylesheets[all][] = css/responsive.css
+stylesheets[all][] = css/colores.css
+stylesheets[all][] = css/logintoboggan.css
+stylesheets[all][] = css/forms.css
+stylesheets[all][] = css/main.css
+stylesheets[all][] = css/accordion.css
+stylesheets[all][] = css/aggregator.css
+stylesheets[all][] = css/metadata.css
+stylesheets[all][] = css/islandora.base.css
+stylesheets[all][] = css/islandora_basic_collection.base.css
+stylesheets[all][] = css/islandora_basic_collection.theme.css
+stylesheets[all][] = css/admin_menu_toolbar.css
+stylesheets[all][] = css/cuatro-columnas.css
+scripts[] = js/enquire.min.js
+scripts[] = js/main.js
+
+regions[header] = Header
+regions[help] = Help
+regions[page_top] = Page top
+regions[page_bottom] = Page bottom
+regions[highlighted] = Highlighted
+
+regions[featured] = Featured
+regions[content] = Content
+regions[sidebar_first] = Sidebar first
+regions[sidebar_second] = Sidebar second
+
+regions[search_facets] = Search Facets Bar
+regions[triptych_middle] = Triptych middle
+regions[triptych_last] = Triptych last
+
+regions[footer_firstcolumn] = Footer first column
+regions[footer_secondcolumn] = Footer second column
+regions[footer_thirdcolumn] = Footer third column
+regions[footer_fourthcolumn] = Footer fourth column
+regions[footer] = Footer

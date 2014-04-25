@@ -1,0 +1,4 @@
+name = Field Islandora
+description = Field para vincular con Islandora
+package = Islandora
+core = 7.x

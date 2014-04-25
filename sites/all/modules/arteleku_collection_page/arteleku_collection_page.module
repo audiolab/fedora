@@ -1,0 +1,399 @@
+<?php
+
+/**
+ * @file
+ * Various hook and function implementations.
+ */
+
+/**
+ * Implements hook_init().
+ */
+function arteleku_collection_page_init() {
+  // Include islandora_solr common.inc.
+	module_load_include('inc', 'islandora_solr', 'includes/utilities');
+	module_load_include('inc', 'islandora_solr', 'includes/results');
+	module_load_include('inc', 'islandora_solr', 'includes/query_processor');
+}
+
+/**
+ * Implements hook_menu().
+ */
+function arteleku_collection_page_menu() {
+  $items = array();
+
+  // @TODO: create separate permission?
+  $items['collections'] = array(
+    'page callback' => 'arteleku_collection_page_callback',
+    'page arguments' => array(1, 2),
+    'access callback' => 'arteleku_collection_page_access_callback',
+    'access arguments' => array(1),
+    'type' => MENU_CALLBACK,
+  );
+  $items['admin/islandora/search/islandora_solr/collection_pages'] = array(
+    'title' => 'Collection Pages',
+    'description' => 'Arteleku Collection pages settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('arteleku_collection_page_admin_settings'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'arteleku_collection_page.admin.inc',
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function arteleku_collection_page_theme() {
+  // Set path.
+  $base = array(
+    'path' => drupal_get_path('module', 'arteleku_collection_page') . '/theme',
+    'file' => 'arteleku_collection_page.theme.inc',
+  );
+
+  return array(
+    'arteleku_collection_page_wrapper' => $base + array(
+      'template' => 'arteleku-collection-page-wrapper',
+      'variables' => array(
+        'facets' => NULL,
+        'results' => NULL,
+      ),
+    ),
+    'arteleku_collection_page_results' => $base + array(
+      'template' => 'islandora-solr-facet-pages-results',
+      'variables' => array(
+        'results' => array(),
+        'solr_field' => NULL,
+        'path' => NULL,
+      ),
+    ),
+    'arteleku_collection_page_letterer' => $base + array(
+      'variables' => array(
+        'facet_queries' => array(),
+        'fq_map' => array(),
+        'prefix' => NULL,
+        'path' => NULL,
+      ),
+    ),
+    'arteleku_collection_page_admin_table' => array(
+      'file' => 'arteleku_collection_page.admin.inc',
+      'render element' => 'form',
+    ),
+  );
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function arteleku_collection_page_block_info() {
+  return array(
+    'arteleku-collection-pages' => array(
+      'info' => t('Arteleku Solr facet pages'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function arteleku_collection_page_block_view($delta = '') {
+  $block = array();
+
+  switch ($delta) {
+    case 'arteleku-collection-pages':
+      $block['subject'] = t('Collections');
+      $block['content'] = _arteleku_collection_page_block_callback();
+      break;
+  }
+
+  return $block;
+}
+
+/**
+ * Performs a solr query to get facets fields for the alphabetical pager.
+ *
+ * It makes use of facet queries.
+ *
+ * @param object $solr
+ *   Apache_Solr_Service object to use for the facet query.
+ * @param string $solr_field
+ *   Solr field to use for the facet query.
+ *
+ * @return array
+ *   Returns array containing facet_queries and a filter query map. Both arrays
+ *   are used to theme the alphabetical pager. The fq_map contains an array
+ *   which maps a filter query to a prefix. eg: solr_field:A* => A.
+ *   Facet_queries are the solr results wich maps the filter query to the bucket
+ *   size, eg: solr_field:A* => 1234
+ */
+function _arteleku_collection_page_letterer($solr, $collection_name) {
+	//collection field: RELS_EXT_isMemberOfCollection_uri_ms
+	$collection_field = 'RELS_EXT_isMemberOfCollection_uri_ms';
+	$fq = array();
+  $fq_map = array();
+/*  foreach (range('A', 'Z') as $letter) {
+    $value = "$solr_field:$letter*";
+    $fq_map[$value] = $letter;
+    $fq[] = $value;
+}*/
+	
+  // Set facet parameters.
+  $params = array(
+    'facet' => 'true',
+    'facet.field' => 'dc.title',
+    'facet.sort' => 'index',
+    'facet.mincount' => 1,
+    'facet.limit' => 0,
+    'facet.query' => $fq,
+    'qt' => variable_get('islandora_solr_request_handler', 'standard'),
+  );
+
+  // Set query.
+  //$query = "$solr_field:[* TO *]";
+   $c_name = islandora_solr_lesser_escape($collection_name);
+  $query = "$collection_field:$c_name";
+  // Solr results in JSON format.
+  $result_object = json_decode($solr->search($query, 0, 0, $params)->getRawResponse());
+  $pro = new IslandoraSolrQueryProcessor();
+  $q = $pro->buildQuery($query, $params);
+  $pro->executeQuery(true);
+  $response_object = new stdClass();
+  $response_object->islandoraSolrResult = $result_object;
+  $islandora_results_object = new IslandoraSolrResults();
+  $t= $islandora_results_object->displayFacets($pro, true);
+  $l = $islandora_rendered = $islandora_results_object->displayResults($pro);
+//  dpm(print_r($t, true));
+ // dpm(print_r($l, true));
+  // Facet queries.
+//  $facet_queries = $result_object->facet_counts->facet_queries;
+
+  return array(
+//    'facet_queries' => $facet_queries,
+	  //  'fq_map' => $fq_map,
+	  'facets' => $t,
+	  'results' => $l
+  );
+}
+
+/**
+ * Performs a solr query to return facet_fields to populate the results page.
+ *
+ * @param object $solr
+ *   Apache_Solr_Service object to use for the facet fields query.
+ * @param string $solr_field
+ *   Solr field to use for the facet fields query
+ * @param string $prefix
+ *   Prefix from the URL to add to add a prefix to the facet query. This will
+ *   limit the returned fields with fields that are prefixed with this value.
+ *
+ * @return array
+ *   Returns an array of all the facet field values and the bucket size: eg:
+ *   solr value => 123
+ */
+function _arteleku_collection_page_results($solr, $solr_field, $prefix) {
+  // Get the actual results.
+  $query = "$solr_field:[* TO *]";
+
+  // Set facet parameters.
+  $facet_params = array(
+    'facet' => 'true',
+    'facet.field' => 'dc.title',
+    'facet.sort' => 'index',
+    'facet.mincount' => 1,
+    'facet.limit' => variable_get('arteleku_collection_page_facet_limit', 100000),
+    'qt' => variable_get('islandora_solr_request_handler', 'standard'),
+  );
+
+  // Set the facet prefix.
+  if ($prefix != t('ALL')) {
+    $facet_params['facet.prefix'] = $prefix;
+  }
+
+  // Solr results in JSON format.
+  $result_object = json_decode($solr->search($query, 0, 0, $facet_params)->getRawResponse());
+
+  $fields = (array) $result_object->facet_counts->facet_fields->$solr_field;
+
+  return $fields;
+}
+
+/**
+ * Prepares data to render the pager.
+ *
+ * @param array $result_fields
+ *   An array containing all the results
+ *
+ * @return array
+ *   Returns an array containing values to configure and render the pager.
+ *   Limit, offset and total.
+ */
+function _arteleku_collection_page_pager($result_fields = array()) {
+  // Set variables.
+  $limit = variable_get('arteleku_collection_page_limit', 25);
+  $offset = 0;
+  $total = NULL;
+
+  // Get URL parameters.
+  $params = $_GET;
+  unset($params['q']);
+
+  // Get page limit.
+  if (!empty($limit)) {
+    $total = count($result_fields);
+    $offset = isset($params['page']) ? $params['page'] * $limit : 0;
+    pager_default_initialize($total, $limit);
+  }
+
+  return array(
+    'limit' => $limit,
+    'offset' => $offset,
+    'total' => $total,
+  );
+}
+
+/**
+ * Page callback function.
+ *
+ * @param string $path
+ *   Machine readable name passed in the url to decide what solr field to facet
+ *   on.
+ * @param string $prefix
+ *   Letter of the alphabet to filter on.
+ *
+ * @return string
+ *   Rendered page including letter pager, numerical pager and search results.
+ */
+function arteleku_collection_page_callback($path = NULL, $prefix = NULL) {
+  // Get available fields from variable.
+  $fields = variable_get('arteleku_collection_page_collection_data', array());
+
+  // Callback validation.
+  foreach ($fields as $key => $value) {
+    if ($path == $value['path']) {
+      // Set variables.
+      $collection_name = $value['collection_field'];
+      drupal_set_title($value['label']);
+    }
+  }
+
+
+
+  // Set default prefix.
+  if ($prefix == NULL) {
+    $prefix = t('ALL');
+  }
+
+  // Include base CSS file.
+  $base_css = drupal_get_path('module', 'arteleku_collection_page') . '/css/arteleku_collection_page.base.css';
+  drupal_add_css($base_css);
+
+  // Use Solr faceting to get list of names.
+  $parsed_url = parse_url(variable_get('islandora_solr_url', 'http://localhost:8080/solr'));
+  $solr = new Apache_Solr_Service($parsed_url['host'], $parsed_url['port'], $parsed_url['path']);
+  
+  
+  // Render letters.
+  $letterer_arr = _arteleku_collection_page_letterer($solr, $collection_name);
+ /* $letterer = theme('arteleku_collection_page_letterer', array(
+    'facet_queries' => $letterer_arr['facet_queries'],
+    'fq_map' => $letterer_arr['fq_map'],
+    'prefix' => $prefix,
+    'path' => $path,
+));
+
+
+  // Collect results.
+  $result_fields = _arteleku_collection_page_results($solr, $solr_field, $prefix);
+  // Collect results with lowercase.
+  $prefix_lower = strtolower($prefix);
+  $result_fields_lower = _arteleku_collection_page_results($solr, $solr_field, $prefix_lower);
+  // Merge uppercase with lowercase.
+  $result_fields = array_merge($result_fields, $result_fields_lower);
+
+  // Set up pager.
+  $pager_data = _arteleku_collection_page_pager($result_fields);
+  $offset = $pager_data['offset'];
+  $limit = $pager_data['limit'];
+
+  // Slice array.
+  $results = array_slice($result_fields, $offset, $limit);
+  $results = theme('arteleku_collection_page_results', array(
+    'results' => $results,
+    'solr_field' => $solr_field,
+    'path' => $path,
+  ));
+
+  // Render pager.
+  $pager = theme('pager', array(
+    'element' => 0,
+    'quantity' => 5,
+  ));
+  */
+  return theme('arteleku_collection_page_wrapper', array(
+    'facets' => $letterer_arr['facets'],
+    'results' => $letterer_arr['results']
+));
+  
+}
+
+/**
+ * Access callback function.
+ *
+ * @param string $path
+ *   Machine readable name passed in the url to decide what solr field to facet
+ *   on.
+ *
+ * @return bool
+ *   A boolean based on user access and valid path.
+ */
+function arteleku_collection_page_access_callback($path = NULL) {
+  // Get available fields from variable.
+  $fields = variable_get('arteleku_collection_page_collection_data', array());
+
+  // Callback validation.
+  foreach ($fields as $key => $value) {
+    // Check for allowed paths.
+    if ($path == $value['path'] && user_access(FEDORA_VIEW_OBJECTS)) {
+      return TRUE;
+    }
+  }
+
+  return FALSE;
+}
+
+
+/**
+ * Callback function to populate the facet page block with links.
+ *
+ * @return string
+ *   Returns a rendered bulletted list with links to all configured facet
+ *   pages.
+ */
+function _arteleku_collection_page_block_callback() {
+  // Get available fields from variable.
+  $fields = variable_get('arteleku_collection_page_collection_data', array());
+
+  $items = array();
+  foreach ($fields as $key => $value) {
+
+    $items[] = l($value['label'], 'collections/' . $value['path'], array(
+      'attributes' => array(
+        'title' => $value['label'],
+      ),
+    ));
+  }
+
+  if (!empty($items)) {
+    return theme('item_list', array(
+      'items' => $items,
+      'type' => 'ul',
+      'attributes' => array(
+        'class' => 'islandora-solr-facet-pages-list',
+      ),
+    ));
+  }
+  else {
+    return FALSE;
+  }
+}

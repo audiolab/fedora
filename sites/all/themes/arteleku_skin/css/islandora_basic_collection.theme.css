@@ -1,0 +1,109 @@
+/*
+    Document   : islandora_basic_collection.theme
+    Created on : May 23, 2012, 11:23:56 AM
+    Description: Theme css, like margins, padding, borders, colors, etc
+*/
+
+/* Make flexible and assure content doesn't go off the page */
+.islandora-basic-collection {
+  overflow: hidden;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Round borders on images */
+.islandora-basic-collection-object dt img {
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  border-radius: 0px;
+    -webkit-filter: grayscale(100%);
+    -moz-filter: grayscale(100%);
+    filter: grayscale(100%);
+    opacity: 0.2;
+}
+dl.islandora-basic-collection-object:hover dt img {
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    border-radius: 0px;
+    -webkit-filter: grayscale(0%);
+    -moz-filter: grayscale(0%);
+    filter: grayscale(0%);
+    opacity: 1;
+}
+
+/* Set space between objects */
+.islandora-basic-collection-object {
+  margin: 0 0 40px 0;
+    position: relative;
+}
+.islandora-basic-collection-object .islandora-basic-collection-caption{
+    position: absolute;
+    top: 20px;
+    left:20px;
+}
+
+dl.islandora-basic-collection-object:hover .islandora-basic-collection-caption{
+    position: absolute;
+    top: 20px;
+    left:20px;
+    display: none;
+}
+
+/* Set space between dd items */
+.islandora-basic-collection-object dd {
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+/* LIST VIEW */
+
+/* Borders to seperate collection objects */
+.islandora-basic-collection-list-item {
+  padding-bottom: 1.5em;
+  border-bottom: 1px solid #ddd;
+}
+
+
+/* to be moved to admin when it is added */
+#islandora-collection-deletion-form table th.select-all,
+#islandora-collection-migrate-form table th.select-all {
+  width: 20px;
+}
+
+
+table#islandora-collection-table{
+    border-collapse: separate;
+    width:100%;
+}
+table#islandora-collection-table tr{
+    border-bottom: 1px solid black;
+}
+table#islandora-collection-table tr.odd{
+    background-color: transparent;
+}
+table#islandora-collection-table tr.even{
+    background-color: rgb(249,229,220);
+}
+table#islandora-collection-table tr td{
+    display: table-cell;
+    padding: 1em 0.5em;
+    line-height: 1.2em;
+    font-size:12px;
+    font-family: 'Droid Sans',sans-serif;
+    line-height: 15px;
+    vertical-align: top;
+}
+table#islandora-collection-table tr:hover.even{
+    background-color: rgb(213, 193, 185);
+}
+table#islandora-collection-table tr:hover.odd{
+    background-color: rgb(228, 228, 215);
+}
+
+table#islandora-collection-table td.title-cell{
+    width:50%;
+}
+
+
+
+

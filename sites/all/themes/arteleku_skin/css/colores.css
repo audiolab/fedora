@@ -1,0 +1,15 @@
+/* Selection colours (easy to forget) */
+
+::selection      { background: rgb(249,229,220); }
+::-moz-selection   { background: rgb(249,229,220); }
+img::selection     { background: transparent; }
+img::-moz-selection  { background: transparent; }
+body { -webkit-tap-highlight-color: rgb(249,229,220); }
+
+a { color: rgb(0, 0, 0); text-decoration: none; }
+
+
+#footer-credits{
+	background-color: black;
+	color: white;
+}

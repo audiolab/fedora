@@ -1,0 +1,64 @@
+/*  Typography presets
+  ------------------  */
+
+.gigantic { font-size: 110px; letter-spacing: -2px; line-height: 120px; }
+
+.huge, h1 {
+  font-family: 'Droid Sans Mono', sans-serif;
+  font-size: 36px;
+  font-weight: normal;
+  letter-spacing: -1px;
+  line-height: 40px;
+}
+
+.large, h2 {
+  font-family: 'Droid Sans Mono', sans-serif;
+  font-size: 26px;
+  font-weight: normal;
+  line-height: 30px;
+  margin-bottom: 20px;
+}
+
+.bigger, h3 {
+  font-family: 'Droid Sans Mono', sans-serif;
+  font-size: 12px;
+  font-weight: normal;
+  letter-spacing: 1px;
+  line-height: 20px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  text-transform: uppercase;
+}
+
+.big, h4 { font-family: 'Droid Sans Mono', sans-serif; font-size: 22px; line-height: 30px; }
+
+body { font: 16px/24px Georgia, serif; }
+
+.small, small { font-size: 13px; line-height: 18px; }
+#info-panel h3{
+	font-weight: bold;
+	text-transform: none;
+	font-family:  'Droid Sans', sans-serif;
+	letter-spacing: 0px;
+}
+
+.field-name-body ul,
+.pane-apachesolr-result ul{
+	margin-left: 30px;
+}
+
+#page-title{
+	font-family:'Droid Sans Mono',sans-serif;
+	font-size: 12px;
+	font-weight:normal;
+	letter-spacing:1px;
+	text-transform:uppercase;
+	margin: 9px 0;
+	border-top: 2px solid black;
+	border-bottom: 1px solid black;
+}
+
+.block-menu h2{
+    font-size:14px;
+    text-transform: uppercase;
+}

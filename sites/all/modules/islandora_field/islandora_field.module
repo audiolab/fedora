@@ -1,0 +1,248 @@
+<?php
+/**
+ * @file
+ * An example field using the Field Types API.
+ */
+
+
+/**
+ * Implements hook_field_info().
+ *
+ * Provides the description of the field.
+ */
+function islandora_field_field_info() {
+  return array(
+    // We name our field as the associative name of the array.
+    'islandora_field' => array(
+      'label' => t('Islandora object relation field'),
+      'description' => t('Relate with an islandora object'),
+      'default_widget' => 'islandora_field_relation',
+      'default_formatter' => 'islandora_field_rendered_object',
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_validate().
+ *
+ * This hook gives us a chance to validate content that's in our
+ * field. We're really only interested in the $items parameter, since
+ * it holds arrays representing content in the field we've defined.
+ * We want to verify that the items only contain RGB hex values like
+ * this: #RRGGBB. If the item validates, we do nothing. If it doesn't
+ * validate, we add our own error notification to the $errors parameter.
+ *
+ * @see field_example_field_widget_error()
+ */
+function islandora_field_field_validate($entity_type, $entity, $field, $instance, $langcode, $items, &$errors) {
+  /*foreach ($items as $delta => $item) {
+    if (!empty($item['rgb'])) {
+      if (! preg_match('@^#[0-9a-f]{6}$@', $item['rgb'])) {
+        $errors[$field['field_name']][$langcode][$delta][] = array(
+          'error' => 'field_example_invalid',
+          'message' => t('Color must be in the HTML format #abcdef.'),
+        );
+      }
+    }
+  }*/
+}
+
+
+/**
+ * Implements hook_field_is_empty().
+ *
+ * hook_field_is_emtpy() is where Drupal asks us if this field is empty.
+ * Return TRUE if it does not contain data, FALSE if it does. This lets
+ * the form API flag an error when required fields are empty.
+ */
+function islandora_field_field_is_empty($item, $field) {
+  return empty($item['pid']);
+}
+
+/**
+ * Implements hook_field_formatter_info().
+ *
+ * We need to tell Drupal that we have two different types of formatters
+ * for this field. One will change the text color, and the other will
+ * change the background color.
+ *
+ * @see field_example_field_formatter_view()
+ */
+function islandora_field_field_formatter_info() {
+  return array(
+    // This formatter just displays the hex value in the color indicated.
+    'islandora_field_rendered_object' => array(
+      'label' => t('Rendered object'),
+      'field types' => array('islandora_field'),
+    )
+  );
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ *
+ * Two formatters are implemented.
+ * - field_example_simple_text just outputs markup indicating the color that
+ *   was entered and uses an inline style to set the text color to that value.
+ * - field_example_color_background does the same but also changes the
+ *   background color of div.region-content.
+ *
+ * @see field_example_field_formatter_info()
+ */
+function islandora_field_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+
+  switch ($display['type']) {
+    // This formatter simply outputs the field as text and with a color.
+    case 'islandora_field_rendered_object':
+
+        //dpm($items);
+      foreach ($items as $delta => $item) {
+          //tenemos el valor en $item['pid'];
+          $t = entity_load('islandora_object', array($item['pid']));
+          //$object = islandora_object_load();
+          $element[$delta] = array(
+            '#type' => 'markup',
+            '#markup' => theme('islandora_preview', array('islandora_object' => $t[0])),
+          );
+      }
+      break;
+  }
+
+  return $element;
+}
+
+/**
+ * Implements hook_field_widget_info().
+ *
+ * Three widgets are provided.
+ * - A simple text-only widget where the user enters the '#ffffff'.
+ * - A 3-textfield widget that gathers the red, green, and blue values
+ *   separately.
+ * - A farbtastic colorpicker widget that chooses the value graphically.
+ *
+ * These widget types will eventually show up in hook_field_widget_form,
+ * where we will have to flesh them out.
+ *
+ * @see field_example_field_widget_form()
+ */
+function islandora_field_field_widget_info() {
+  return array(
+    'islandora_field_relation' => array(
+      'label' => t('Relation'),
+      'field types' => array('islandora_field'),
+    )
+  );
+}
+
+/**
+ * Implements hook_field_widget_form().
+ *
+ * hook_widget_form() is where Drupal tells us to create form elements for
+ * our field's widget.
+ *
+ * We provide one of three different forms, depending on the widget type of
+ * the Form API item provided.
+ *
+ * The 'field_example_colorpicker' and 'field_example_text' are essentially
+ * the same, but field_example_colorpicker adds a javascript colorpicker
+ * helper.
+ *
+ * field_example_3text displays three text fields, one each for red, green,
+ * and blue. However, the field type defines a single text column,
+ * rgb, which needs an HTML color spec. Define an element validate
+ * handler that converts our r, g, and b fields into a simulated single
+ * 'rgb' form element.
+ */
+function islandora_field_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+  $value = isset($items[$delta]['pid']) ? $items[$delta]['pid'] : '';
+
+  $widget = $element;
+  $widget['#delta'] = $delta;
+
+  switch ($instance['widget']['type']) {
+
+    case 'islandora_field_relation':
+      $widget += array(
+        '#attributes' => array('class' => array('edit-field-islandora-relation')),
+        '#type' => 'textfield',
+        '#autocomplete_path' => 'islandorafield/autocomplete',
+        '#default_value' => $value,
+      );
+
+    // DELIBERATE fall-through: From here on the field_example_text and
+    // field_example_colorpicker are exactly the same.
+   /* case 'field_example_text':
+      $widget += array(
+        '#type' => 'textfield',
+        '#default_value' => $value,
+        // Allow a slightly larger size that the field length to allow for some
+        // configurations where all characters won't fit in input field.
+        '#size' => 7,
+        '#maxlength' => 7,
+      );*/
+      break;
+
+
+
+  }
+
+  $element['pid'] = $widget;
+  return $element;
+}
+
+
+/**
+ * Implements hook_field_widget_error().
+ *
+ * hook_field_widget_error() lets us figure out what to do with errors
+ * we might have generated in hook_field_validate(). Generally, we'll just
+ * call form_error().
+ *
+ * @see field_example_field_validate()
+ * @see form_error()
+ */
+function islandora_field_field_widget_error($element, $error, $form, &$form_state) {
+  switch ($error['error']) {
+    case 'islandora_field_invalid':
+      form_error($element, $error['message']);
+      break;
+  }
+}
+
+/**
+ * Implements hook_menu().
+ *
+ * Provides a simple user interface that tells the developer where to go.
+ */
+function islandora_field_menu() {
+    $items['islandorafield/autocomplete'] = array(
+        'page callback' => 'islandora_field_autocomplete',
+        'page arguments' => array(2),
+        'access callback' => TRUE,
+        'type' => MENU_CALLBACK,
+    );
+    return $items;
+}
+
+
+/**
+ * Autocomplete callback for object search.
+ */
+function islandora_field_autocomplete($string) {
+    $matches = array();
+    $islandora_tuque = new IslandoraTuque();
+    $results = $islandora_tuque->api->a->findObjects('terms', '*' . $string . '*', 10);
+
+    foreach ($results['results'] as $result) {
+        // Empty array elements getting sent through.
+        if (is_array($result['title'])) {
+            $title = $result['title'][0];
+        }
+        else {
+            $title = $result['title'];
+        }
+        $matches[$result['pid']] = $title . ' (' . $result['pid'] . ')';
+    }
+    drupal_json_output($matches);
+}

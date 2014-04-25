@@ -1,0 +1,18 @@
+.islandora-related-title {
+    font-weight: bold;
+}
+
+.islandora-related-prev-next {
+    border-bottom: 1px solid #b3b3b3;
+    margin-bottom: 15px;
+}
+
+.islandora-related-thumbs {
+    display: block;
+    white-space: nowrap;
+    overflow-x: auto;
+}
+
+.islandora-related-thumbs img {
+    margin: 5px 5px 5px 5px;
+}

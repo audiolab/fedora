@@ -1,0 +1,989 @@
+/*	Less Framework 4 with 16/24 type presets
+	http://lessframework.com
+	by Joni Korpi
+	License: http://opensource.org/licenses/mit-license.php	*/
+
+
+
+/*	Typography presets
+	------------------	*/
+
+.gigantic {
+	font-size: 110px;
+	line-height: 120px;
+	letter-spacing: -2px;
+}
+
+.huge, h1 {
+	font-size: 36px;
+	line-height: 40px;
+	letter-spacing: -1px;
+	font-family: 'Droid Sans Mono', sans-serif;
+	font-weight: normal;
+}
+
+.large, h2 {
+	font-size: 26px;
+	line-height: 30px;
+	font-family: 'Droid Sans Mono', sans-serif;
+	font-weight: normal;
+	margin-bottom: 20px;
+}
+
+.bigger, h3 {
+	font-size: 12px;
+	line-height: 20px;
+	margin-bottom: 10px;
+	margin-top: 10px;
+	font-family: 'Droid Sans Mono', sans-serif;
+	text-transform: uppercase;
+	font-weight: normal;
+	letter-spacing: 1px;
+}
+
+.big, h4 {
+	font-size: 22px;
+	line-height: 30px;
+	font-family: 'Droid Sans Mono', sans-serif;
+}
+
+body {
+	font: 16px/24px Georgia, serif;
+}
+
+.small, small {
+	font-size: 13px;
+	line-height: 18px;
+}
+
+/* Selection colours (easy to forget) */
+
+::selection 	 	{background: rgb(249,229,220);}
+::-moz-selection 	{background: rgb(249,229,220);}
+img::selection 		{background: transparent;}
+img::-moz-selection	{background: transparent;}
+body {-webkit-tap-highlight-color: rgb(249,229,220);}
+
+
+
+
+
+a{
+	color: rgb(0, 0, 0);
+	text-decoration: none;
+}
+header{
+	position: fixed;
+	background: rgb(248,248,235);
+	padding: 40px 0 0;
+	height: 80px;
+	z-index: 101;
+	margin-left: 200px;
+}
+p{
+	margin-bottom: 20px;
+}
+
+.element-invisible{
+	position: absolute !important;
+	height: 1px;
+	clip: rect(1px, 1px, 1px, 1px);
+	overflow: hidden;
+}
+
+
+h1#titulo{
+	font-size: 12px;
+	line-height: 20px;
+	font-style: normal;
+	font-weight: normal;
+	letter-spacing: 2px;
+	width: 160px;
+	margin-right: 30px;
+	padding: 0 0 0 10px;
+	float: left;
+}
+#block-locale-language-content{
+	float: left;
+	width: 170px;
+	margin-right: 30px;
+}
+
+#block-locale-language-content ul li{
+	float: left;
+	padding: 0 10px;
+	list-style: none;
+}
+#block-locale-language-content a{
+	font-size: 12px;
+	font-family: 'Droid Sans Mono', sans-serif;
+	text-decoration: none;
+}
+#block-locale-language-content ul li.active{
+	text-decoration:underline;
+}
+#block-search-form{
+	width: 170px;
+	height: 25px;
+	border-bottom: 1px solid #000;
+	float: left;
+}
+
+#bloque-tools{
+	width: 570px;
+	margin-right: 30px;
+	float: left;
+	border-top: 2px solid #000;
+	padding: 8px 0 2px 0;
+}
+#bloque-login{
+	width: 170px;
+	float: left;
+	border-top: 2px solid #000;
+}
+
+#white-space{
+	height: 240px;
+}
+#page{
+	clear: both;
+
+}
+#sidebar{
+	width: 170px;
+	position: fixed;
+	font-family: 'Droid Sans Mono', sans-serif;
+	font-size: 12px;
+	letter-spacing: 1px;
+	z-index: 100;
+	top: 40px;
+}
+
+#sidebar .block{
+	margin-bottom: 40px;
+}
+
+#logotipo{
+	width: 160px;
+	margin-right: 30px;
+	margin-top: 9px;
+	margin-left: 10px;
+	margin-bottom: 162px;
+}
+
+#sidebar ul{
+	border-top: 2px solid #000;
+
+}
+
+#sidebar ul li{
+	list-style: none;
+	height: 29px;
+	border-bottom: 1px solid #000;
+	padding: 9px 0 0 10px;
+	margin: 0;
+}
+
+#sidebar a{
+	text-decoration: none;
+	text-transform: uppercase;
+	line-height: 20px;
+
+}
+
+
+
+#featured h3{
+	margin-left: 10px;
+}
+
+#admin-block{
+	width: 770px;
+	padding-left: 200px;
+	position: relative;
+}
+
+#featured .pane-title{
+	border-bottom: 0;
+}
+
+#content{
+	width: 770px;
+	padding-left: 200px;
+}
+
+#featured{
+
+	width: 570px;
+	position: relative;
+	top: 0;
+	height: 400px;
+	float: left;
+	margin-right: 30px;
+	border-top: 2px solid #000;
+}
+
+
+#featured .panel-pane,
+#panel-info .panel-pane{
+	border-top: 0;
+}
+
+#panel-info{
+	position: relative;
+	width: 149px;
+	border-left: 1px solid #000;
+	padding: 5px 0 0 9px;
+	font-family: 'Droid Sans Mono', sans-serif;
+	line-height: 20px;
+	font-size: 14px;
+	height: 400px;
+		float: left;
+}
+#panel-news{
+	position: relative;
+	width: 370px;
+		float: left;
+			margin-right: 30px;
+			margin-top: 20px;
+}
+#panel-first{
+	position: relative;
+
+	width: 170px;
+
+			float: left;
+				margin-right: 30px;
+							margin-top: 20px;
+}
+#panel-second{
+	position: relative;
+	width: 170px;
+
+
+			float: left;
+						margin-top: 20px;
+}
+
+.field-type-datetime{
+	color: rgb(255, 0, 0);
+	font-weight: bold;
+	margin-left: 0px;
+	margin-right: 10px;
+}
+
+.mime-info{
+	color: rgb(255, 0, 0);
+	font-weight: bold;
+	text-transform: uppercase;
+	font-size: 12px;
+	font-family:Georgia, serif;
+}
+.field{
+	margin-bottom: 20px;
+}
+.listado-lineas{
+	margin:0px;
+	border-bottom: 1px solid #000;
+}
+.panel-pane{
+	border-top: 2px solid #000;
+	margin-bottom: 20px;
+}
+.pane-title{
+
+}
+
+.panel-pane.no-line{
+	border: 0;
+}
+.panel-pane.no-margin{
+	margin-bottom: 0;
+}
+.clear{
+	clear: both;
+}
+#footer{
+		position: relative;
+			float: left;
+			clear: both;
+			margin-top: 20px;
+			margin-left: 200px;
+}
+
+#footer{
+	width: 770px;
+}
+#footer-info{
+	display: none;
+}
+
+#footer-logo{
+	width: 170px;
+	float: left;
+	padding-right: 29px;
+	border-right: 1px solid #000;
+	height: 160px;
+}
+
+.footer-panel{
+	width: 160px;
+	float: left;
+	padding-right: 29px;
+	border-right: 1px solid #000;
+	height: 160px;
+	font-size: 12px;
+	padding-left: 10px;
+	line-height: 15px;
+}
+.footer-panel.last{
+	border-right: 0;
+	padding-right: 0;
+}
+#footer-credits{
+	font-size: 10px;
+	width: 770px;
+	margin-top: 40px;
+	border-top: 1px solid #000;
+
+}
+#footer ul{
+	list-style: none;
+}
+.float-left{
+	float: left;
+}
+.float-right{
+	float: right;
+}
+/*_____________ Estilos ----*/
+
+.breves{
+	font-family: 'Droid Sans', sans-serif;
+	font-size: 12px;
+	line-height: 15px;
+	margin-top: 20px;
+}
+.breves .views-row{
+	margin-top: 20px;
+}
+.breves .views-field-created{
+	margin-bottom: 19px;
+	color: rgb(148,146,123);
+}
+.panel-header{
+	border-top: 2px solid #000;
+
+}
+.pane-title{
+	border-bottom: 1px solid #000;
+}
+.pane-title h3{
+	margin-left: 10px;
+	margin-bottom: 8px;
+	margin-top: 9px;
+}
+.field-name-field-tipo,
+.tipo-de-contenido{
+	margin-left: 0px;
+	margin-right: 10px;
+	margin-bottom: 10px;
+	margin-top: 9px;
+}
+.field-name-field-tipo .field-item,
+.tipo-de-contenido-wrapper{
+	line-height: 15px;
+	color: rgb(148,146,123);
+	font-family: 'Droid Sans Mono', sans-serif;
+	font-weight: normal;
+	letter-spacing: 1px;
+	font-size: 12px;
+}
+.event-title,
+.event-body,
+.cuadrado{
+	margin: 0 0px;
+}
+.medium-event,
+.small-event{
+	margin:0px;
+	border-bottom: 1px solid #000;
+}
+.event-dates{
+
+}
+.cuadrado{
+	width: 16px;
+	height: 16px;
+	background-color: rgba(0, 0, 0,0.1);
+	margin-bottom: 23px;
+}
+.small-event{
+	margin-top: 20px;
+}
+.small-event h2{
+	font-size: 16px;
+	line-height: 20px;
+}
+.small-event .event-dates{
+	font-size: 12px;
+}
+.event-mini-picture{
+	margin-bottom: 20px;
+	width: 170px;
+	height: 120px;
+}
+
+.tweet{
+	font-family: 'Droid Sans', sans-serif;
+	font-size: 12px;
+	line-height: 15px;
+	padding-bottom: 19px;
+	margin-bottom: 20px;
+	border-bottom: 1px solid #000;
+}
+.tweet-content{
+	margin: 20px 10px 0 10px;
+}
+.tweet-content a{
+	font-weight: bold;
+}
+.tweet-time,
+.tweet-actions{
+	color: rgb(148, 146, 123);
+	margin: 0 10px;
+}
+.clear{
+	clear: both;
+}
+
+.last{
+	border-bottom: 0;
+}
+
+.only-mobile{
+	display: none;
+}
+
+/*   Tabs administrativos */
+ul.tabs{
+	border: 0;
+	font-family: 'Droid Sans Mono', sans-serif;
+	font-size: 12px;
+	padding: 0 10px 0 0;
+
+}
+ul.tabs li.active a{
+	background-color: rgb(255,0,0);
+	border:0;
+	color:white;
+}
+ul.tabs li a{
+	background-color: rgb(249,229,220);
+	border:0;
+	text-transform: uppercase;
+}
+/*   Fin Tabs administrativos */
+
+
+div.resumen h3{
+	font-size: 16px;
+	text-transform: none;
+}
+
+div.resumen .field-type-datetime{
+	font-size: 12px;
+}
+
+/* FIN INFO PANEL */
+div.panel-pane.grid-box{
+	border-top: 2px solid black;
+}
+.grid-box ul{
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+.grid-box .pane-content{
+	margin: 0 10px;
+}
+.grid-box .field-item,
+.grid-box li{
+	padding: 5px 10px;
+	margin: 0;
+	display:inline-block;
+	background-color: rgb(249,229,220);
+	margin:0px 10px 10px 0;
+	font-family: 'Droid Sans Mono', sans-serif;
+	text-transform: uppercase;
+	font-size: 12px;
+}
+
+.field-name-body a{
+	color: red;
+}
+
+.panel-pane .views-row
+{
+	padding: 0 10px;
+}
+
+.views_slideshow_main .views-row{
+	padding: 0;
+}
+
+.search-form-lupa{
+	display: block;
+	float: left;
+	margin-right: 10px;
+}
+
+.search-form-input{
+	background-color:rgb(248,248,235);
+	border: 0;
+	height: 20px;
+	width: 138px;
+}
+
+#bloque-social ul{
+	list-style: none;
+	margin-left: 10px;
+}
+#bloque-social li{
+	float: left;
+	margin-right: 10px;
+	margin-top: 8px;
+}
+#bloque-login-link{
+	float: right;
+	width: 170px;
+	border-bottom: 1px solid black;
+	height: 27px;
+	padding: 8px 0 2px 0;
+	font-size: 12px;
+	font-family: 'Droid Sans Mono', sans-serif;
+}
+
+.views-row.agrupado{
+	padding: 0;
+	margin-bottom: 20px;
+}
+/*________________TARJETA______________*/
+div.tarjeta{
+  border: 1px solid black;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+div.tarjeta .inside{
+  padding: 0 10px;
+}
+
+div.tarjeta:hover {
+  background: rgb(249,229,220);
+  border: 1px solid rgb(249,229,220);
+
+}
+
+div.tarjeta h3{
+  font-size: 16px;
+  line-height: 20px;
+  text-transform: none;
+}
+
+.row-last div.tarjeta{
+  margin-bottom: 0px;
+}
+.todo-ancho table{
+	width: 100%;
+}
+/*________________TARJETA______________*/
+/*_______________ CALENDARIO ________________*/
+
+.calendar-calendar tr{
+	background-color: transparent;
+}
+
+.calendar-calendar table.mini{
+	font-size: 12px;
+	font-family: 'Droid Sans Mono', sans-serif;
+}
+.calendar-calendar table.mini thead{
+	display: none;
+}
+.calendar-calendar table.mini a{
+	color:rgb(255,0,0);
+}
+
+.calendar-calendar tr td.today{
+	background-color:rgb(249,229,220);
+}
+.view .date-nav-wrapper{
+	font-size: 12px;
+	font-family: 'Droid Sans Mono', sans-serif;
+	margin: 0;
+}
+.view .date-nav-wrapper .date-heading{
+	float: left;
+	width: auto;
+}
+.view .date-nav-wrapper .date-heading h3{
+	font-size: 12px;
+	text-align: left;
+	margin-left: 10px;
+	text-transform: capitalize;
+	color:rgb(148,146,123);
+}
+.view .date-nav-wrapper .date-prev,
+.view .date-nav-wrapper .date-next{
+	border-radius: 0;
+	-moz-border-radius:0;
+	width: 15px;
+	height: 15px;
+	padding: 0;
+	background-color: transparent;
+}
+.view .date-nav-wrapper .date-prev a{
+	margin:0;
+}
+
+.view .date-nav-wrapper .date-nav{
+	height: 20px;
+	margin: 0;
+	padding: 0;
+	min-height: 20px;
+}
+.view .date-nav-wrapper .pager{
+	background-image: none;
+	margin: 0;
+	float: right;
+	position: absolute;
+	top:0;
+	right: 0;
+
+}
+
+
+
+
+.calendar-calendar table.mini td.empty{
+	border: 0;
+	background-color: transparent;
+}
+
+
+
+
+/*_______________ CALENDARIO ________________*/
+
+.views-row-last.listado-lineas{
+	border-bottom: 0;
+}
+
+
+/*___________________--------------------____________________________________*/
+
+/*		Default Layout: 1200px.
+		Gutters: 30px.
+		Outer margins: 0px.
+		Leftover space for scrollbars @1024px: 32px.
+-------------------------------------------------------------------------------
+cols    1     2      3      4      5      6      7      8      9      10	11		12
+px      70    170    270    370    470    570    670    770    870    970	1070	1170 */
+
+
+@media (min-width: 1200px) {
+	body {
+		width: 1170px;
+	}
+	#content{
+		width: 970px;
+		position: relative;
+		height: auto;
+	}
+
+	#panel-news{
+		position: absolute;
+		top: 0px;
+		margin: 0;
+		left: 800px;
+	}
+
+	#panel-info{
+		position: absolute;
+		top: 420px;
+		left: 200px;
+	}
+
+	#panel-first{
+		position: absolute;
+		top: 420px;
+		left: 400px;
+		margin: 0;
+	}
+	#panel-second{
+		position: absolute;
+		top: 420px;
+		left: 600px;
+		margin: 0;
+	}
+	#footer{
+		margin-top: 20px;
+		margin-left: 200px;
+		width: 970px;
+		height: 200px;
+
+	}
+	#footer-credits{
+
+		width: 970px;
+	}
+	#bloque-login{
+		width: 370px;
+	}
+	#footer-info{
+		display: block;
+	}
+
+
+
+}
+
+/*		Tablet Layout: 770px.
+		Gutters: 24px.
+		Outer margins: 28px.
+		Inherits styles from: Default Layout.
+-----------------------------------------------------------------
+cols    1     2      3      4      5      6      7      8
+px      68    160    252    344    436    528    620    712    */
+
+@media only screen and (min-width: 770px) and (max-width: 991px) {
+
+	body {
+		width: 770px;
+	}
+	#bloque-tools{
+		margin-right: 0px;
+	}
+
+	#bloque-login{
+		clear: both;
+		float: right;
+		width: 170px;
+	}
+	#content{
+		width: 570px;
+		position: relative;
+
+	}
+
+		#footer-credits{
+
+			width: 570px;
+		}
+		#footer{
+			width: 570px;
+		}
+		#footer-document{
+			display: none;
+		}
+
+	#panel-info{
+		position: absolute;
+		top: 420px;
+		left: 600px;
+	}
+
+
+
+
+}
+
+
+
+/*		Mobile Layout: 320px.
+		Gutters: 24px.
+		Outer margins: 34px.
+		Inherits styles from: Default Layout.
+---------------------------------------------
+cols    1     2      3
+px      68    160    252    */
+
+@media only screen and (max-width: 569px) {
+
+	body {
+		width: 270px;
+
+	}
+
+	#sidebar{
+		position: static;
+		width: 270px;
+	}
+	#sidebar #logotipo{
+		display: none;
+	}
+	#sidebar ul li{
+		float: left;
+		border-bottom: 0;
+
+		margin-bottom: 10px;
+	}
+	#sidebar ul {
+
+	}
+	header{
+		margin-left: 0;
+		width: 270px;
+		padding-top: 10px;
+		position: static;
+	}
+	#bloque-tools{
+		width: 270px;
+		margin-right: 0;
+	}
+	#language{
+		width: 70px;
+		margin-right: 0;
+	}
+	.no-mobile{
+		display: none;
+	}
+	#white-space{
+		display: none;
+	}
+	#content{
+		clear: all;
+		width: 270px;
+		padding-left: 0;
+	}
+	#featured{
+		width: 270px;
+		height: 210px;
+		position: static;
+		margin-right: 0;
+	}
+	#featured img{
+		width: 270px;
+	}
+	#panel-news{
+		width: 270px;
+		position: static;
+		margin-top: 20px;
+		margin-right: 0;
+	}
+	#footer{
+		width: 270px;
+		margin-left: 0;
+	}
+	#footer-credits{
+		width: 270px;
+	}
+	#footer-document{
+		display: none;
+	}
+	#footer-dir{
+		display: block;
+		border-right: 0;
+	}
+	#footer-links{
+		display: none;
+	}
+	#footer-logo{
+		border-right: 0;
+		height: 80px;
+	}
+	.footer-panel{
+		height: auto;
+	}
+	.only-mobile{
+		display: block;
+	}
+
+}
+
+
+
+/*		Wide Mobile Layout: 570px.
+		Gutters: 24px.
+		Outer margins: 22px.
+		Inherits styles from: Default Layout, Mobile Layout.
+------------------------------------------------------------
+cols    1     2      3      4      5
+px      68    160    252    344    436    */
+
+@media only screen and (min-width: 570px) and (max-width: 769px) {
+
+	body {
+		width: 570px;
+	}
+	#bloque-tools{
+		margin-right: 0px;
+		width: 370px;
+	}
+	h1#titulo{
+		width: 60px;
+	}
+	#language{
+		width: 70px;
+
+	}
+	header{
+		height: 100px;
+		position: static;
+	}
+
+	#bloque-login{
+		clear: both;
+		float: right;
+		width: 170px;
+	}
+	#white-space{
+		height: 20px;
+	}
+	#content{
+		width: 370px;
+	}
+	.no-tablet{
+		display: none;
+	}
+	#featured{
+		width: 370px;
+		height: 280px;
+	}
+	#featured img{
+		width: 370px;
+	}
+	#footer{
+		width: 370px;
+	}
+	#footer-credits{
+		width: 370px;
+	}
+	#footer-document{
+		display: none;
+	}
+	#footer-dir{
+		display: none;
+	}
+	#logotipo{
+		margin-bottom: 83px;
+	}
+
+}
+
+
+/*	Retina media query.
+	Overrides styles for devices with a
+	device-pixel-ratio of 2+, such as iPhone 4.
+-----------------------------------------------    */
+
+@media
+	only screen and (-webkit-min-device-pixel-ratio: 2),
+	only screen and (min-device-pixel-ratio: 2) {
+
+	body {
+
+	}
+
+}

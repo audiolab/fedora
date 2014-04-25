@@ -1,0 +1,8 @@
+name = "Islandora Book Solution Pack"
+description = "Provides an interface for book objects."
+package = Islandora
+dependencies[] = islandora
+dependencies[] = file
+dependencies[] = islandora_paged_content
+version = 7.x-1.2
+core = 7.x

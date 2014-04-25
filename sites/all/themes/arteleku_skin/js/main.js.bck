@@ -1,0 +1,73 @@
+
+
+var reScale = function(){
+	var biggestHeight = 0;
+	var pos = jQuery('#panel-info').css('position');
+
+	if (pos == 'absolute'){
+		console.log("estamos en su sitio");
+		jQuery('#content div.floating-panel').each(function (index, Element) {
+			if((!jQuery(this).hasClass('clear'))){
+				var p = jQuery(this).outerHeight() + parseInt(jQuery(this).css('top'), 10);
+				if(p > biggestHeight){
+					biggestHeight = p;
+				}
+			}
+		});
+
+		var altura = parseInt(jQuery('#content').css('height'), 10);
+		if (altura < biggestHeight){
+			jQuery('#content').css('height', biggestHeight);
+		}
+	}else{
+			jQuery('#content').css('height', 'auto');
+
+	}
+
+
+}
+
+
+jQuery(document).ready(function(){
+//	reScale();
+	//jQuery(window).resize(function(){reScale();});
+});
+
+// Using the closure to map jQuery to $.
+(function ($) {
+// Store our function as a property of Drupal.behaviors.
+Drupal.behaviors.arteleku_skin = {
+  attach: function (context, settings) {
+  	posicionadoFooter();
+  	$(window).resize(function(){ posicionadoFooter();});
+	}
+};
+
+var posicionadoFooter = function(){
+		var container = $('div#content');
+		var containerTop = container.offset().top;
+		var containerHeight = container.height();
+		var bloques = $('.floating-panel', container)
+		var maxHeight = 0;
+		bloques.each(function (index, Element){
+			var bloqueTop = $(Element).offset().top - containerTop;
+			var bloqueHeight = $(Element).outerHeight();
+			var altura = bloqueHeight + bloqueTop;
+			if (altura > maxHeight){
+				maxHeight = altura;
+			}
+		});
+		if (maxHeight){
+			container.css('height', maxHeight);
+		}
+
+};
+
+
+
+
+
+
+
+}(jQuery));
+

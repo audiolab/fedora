@@ -1,0 +1,13 @@
+name = "Islandora Zehar Collection"
+description = "Módulo para la colección Zehar"
+dependencies[] = islandora
+dependencies[] = islandora_pdf
+dependencies[] = islandora_pdfjs_reader
+dependencies[] = islandora_basic_image
+package = Islandora
+version = 7.x-1.2
+core = 7.x
+configure = admin/islandora/zehar
+
+//stylesheets[all][] = css/islandora_zehar.base.css
+//stylesheets[all][] = css/islandora_zehar.theme.css

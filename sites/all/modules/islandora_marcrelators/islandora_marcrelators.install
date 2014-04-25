@@ -1,0 +1,53 @@
+<?php
+
+
+define('ISLANDORA_MARCRELATORS_I', 'marcrelators');
+
+function islandora_marcrelators_install(){
+    _islandora_marcrelators_create_taxonomy();
+}
+
+function _islandora_marcrelators_create_taxonomy(){
+    $t = get_t();
+
+    $term = new stdClass();
+    $term->name = $t('Marc Relators');
+    $term->machine_name = ISLANDORA_MARCRELATORS_I;
+    $term->description = $t('Description');
+    $term->hierarchy = 1;
+    $term->module = 'islandora_marcrelators';
+    $term->weight = 1;
+    taxonomy_vocabulary_save($term);
+
+    // Create a field
+    $field = array(
+        'field_name' => 'field_authority_code',
+        'type' => 'text',
+        'label' => 'Code'
+    );
+
+    $prior_field = field_read_field($field['field_name'], array('include_inactive' => TRUE));
+    if(!$prior_field){field_create_field($field);}
+
+    // Attach the field to our taxonomy entity
+    $instance = array(
+        'field_name' => 'field_authority_code',
+        'entity_type' => 'taxonomy_term',
+        'bundle' => ISLANDORA_MARCRELATORS_I,
+        'label' => 'Code',
+        'description' => $t('Description'),
+        'required' => true,
+        'widget' => array(
+            'type' => 'text_textfield',
+            'weight' => 3
+        )
+    );
+    field_create_instance($instance);
+}
+
+function islandora_marcrelators_enable(){
+    $tax = taxonomy_vocabulary_machine_name_load(ISLANDORA_MARCRELATORS_I);
+    if (!$tax){_islandora_marcrelators_create_taxonomy();}
+}
+
+

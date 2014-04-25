@@ -1,0 +1,14 @@
+.metadata-record{
+	font-size:12px;
+}
+
+.islandora-inline-metadata dt{
+	width:30%;
+}
+.islandora-inline-metadata dd{
+	width: 69%;
+}
+
+.islandora h2.title{
+	margin-bottom:10px;
+}

@@ -1,0 +1,15 @@
+
+/**
+ * @file
+ * Toolbar style for Administration menu.
+ *
+ * Important: We cannot re-use toolbar.png from Toolbar module, since we cannot
+ * reliably determine the path to it.
+ *
+ * @todo Separate shortcut functionality into own module/widget.
+ */
+
+/* Adjust margin/height */
+html body.admin-menu {
+  margin-top: 0px !important;
+}

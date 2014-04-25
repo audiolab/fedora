@@ -1,0 +1,131 @@
+/* base markup for islandora_solr_facet_pages */
+
+/* Letterer */
+.cuatro-columnas-adaptativo{
+  position: relative;
+}
+
+#destacado-adaptativo{
+  width: 570px;
+  top: 0;
+ /* height: 400px; */
+  float: left;
+  margin-right: 30px;
+  border-top: 2px solid #000;
+  /*margin-bottom: 40px;*/
+}
+
+#destacado-adaptativo .panel-pane{
+  border: 0;
+}
+
+#primera-adaptativo .pane-title,
+#sub-columna .pane-title{
+  margin-bottom: 20px;
+}
+
+#primera-adaptativo{
+  width: 570px;
+  float: left;
+  margin-right: 30px;
+}
+
+#primera-adaptativo .panel-pane{
+  padding: 0 0px;
+}
+
+#sub-columna .pane-content{
+  margin-top: 19px;
+    padding: 0 10px;
+}
+#sub-columna{
+  position: absolute;
+  float: right;
+  width: 170px;
+  left: 600px
+}
+
+#segunda-adaptativo{
+  width: 170px;
+  float: left;
+  margin-right: 30px;
+  margin-top: 0px;
+}
+#tercera-adaptativo{
+  width: 170px;
+  float: left;
+  margin-right: 0px;
+  margin-top: 0px;
+}
+
+#page-manager-edit #sub-columna{
+  position: static;
+}
+#page-manager-edit #destacado-adaptativo{
+  height: auto;
+}
+#sub-columna div.panel-no-margin>div.pane-content{
+	margin-top: 0;
+}
+
+@media (min-width: 1200px) {
+
+#sub-columna{
+  position: absolute;
+  width: 370px;
+  top: 0px;
+  left:600px;
+}
+#segunda-adaptativo{
+  margin-right: 30px;
+}
+
+}
+
+@media only screen and (min-width: 770px) and (max-width: 991px) {
+
+#primera-adaptativo{
+  width: 370px;
+  float: left;
+  margin-right: 30px;
+}
+
+#sub-columna{
+  position: static;
+  width: 170px;
+  margin-top: 20px;
+}
+
+}
+
+@media only screen and (max-width: 569px) {
+	#destacado-adaptativo{
+	  width: 270px;
+	}
+	#primera-adaptativo{
+	  width: 270px;
+	  float: left;
+	  margin-right: 30px;
+	}
+	#sub-columna{
+	  position: static;
+	  width: 270px;
+	}
+}
+
+
+@media only screen and (min-width: 570px) and (max-width: 769px) {
+	#destacado-adaptativo{
+	  width: 370px;
+	}
+	#primera-adaptativo{
+	  width: 370px;
+	  float: left;
+	  margin-right: 30px;
+	}
+	#sub-columna{
+	  position: static;
+	  width: 370px;
+	}
+}
+
