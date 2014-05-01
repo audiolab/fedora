@@ -97,26 +97,6 @@ class Authorities {
     return $button;
   }
 
-  private static function createRemoveButton(array &$element, array &$child) {
-    $button['#type'] = 'button';
-    $button['#weight'] = 4;
-    $button['#size'] = 30;
-    $button['#id'] = $button['#name'] = $child['#hash'] . '-remove';
-    $button['#attributes'] = array('style' => 'display:none');
-    $button['#limit_validation_errors'][] = $element['#parents'];
-    $button['#ajax'] = array(
-		'callback' => 'arteleku_elements_ajax_callback',
-		'method' => 'replaceWidth',
-      'params' => array(
-        'render' => $element['#hash'],
-        'target' => $element['#hash'],
-		'child' => $child['#hash'],
-		'action' => 'delete'
-      ),
-    );
-    return $button;
-  }
-
 }
 /*
 function theme_authorities($vars){
@@ -136,7 +116,6 @@ function theme_authorities($vars){
  **/
 function template_preprocess_authorities(&$vars) {
 	$authorities = &$vars['element'];
-
 	$vars['authorities'] = array();
 	$children = element_children($authorities);
 	foreach($children as $key){
@@ -148,5 +127,4 @@ function template_preprocess_authorities(&$vars) {
 	}
 	$vars['select'] = render($authorities['select']);
 	$vars['add'] = $authorities['add'];
-//	$vars['control_add'] = render ($authorities['controls']['add']);
 }
