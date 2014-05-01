@@ -46,7 +46,12 @@ class XMLFormPrePopulator {
    */
   public function prePopulateElement(FormElement $element) {
     $value = $this->getDefaultValue($element);
-    $this->setDefaultValue($element, $value);
+	$this->setDefaultValue($element, $value);
+	$node = $this->registry->get($element->hash);
+	
+	// Modificado por Xavier Balderas
+	drupal_alter("xml_form_{$element->type}_read", $element, $value, $node);
+	// Modificado por Xavier Balderas
   }
 
   /**
@@ -55,7 +60,7 @@ class XMLFormPrePopulator {
    * @param FormElement $element
    */
   private function getDefaultValue(FormElement $element) {
-    $node = $this->registry->get($element->hash);
+	  $node = $this->registry->get($element->hash);
     return $this->getNodeValue($node);
   }
 
@@ -65,7 +70,7 @@ class XMLFormPrePopulator {
    * @param FormElement $element
    */
   private function setDefaultValue(FormElement $element, $value) {
-    if (isset($value)) {
+	  if (isset($value)) {
       $element->default_value = $value;
     }
   }
@@ -87,7 +92,7 @@ class XMLFormPrePopulator {
       case 'DOMAttr':
         return $node->nodeValue;
       case 'DOMElement':
-        if (!dom_element_has_child_elements($node)) {
+		  if (!dom_element_has_child_elements($node)) {
           return $node->nodeValue; // May not be good...
         }
       default:

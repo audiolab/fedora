@@ -41,7 +41,7 @@ class Authority {
    * @return array
    */
   public static function Process(array $element, array &$form_state, array $complete_form = NULL) {
-    $tags = &get_form_element_parent($element, $complete_form);
+	$tags = &get_form_element_parent($element, $complete_form);
     $element['#id'] = $element['#hash'];
     $element['#title'] = isset($tags['#title']) ? $tags['#title'] : FALSE;
     return $element;

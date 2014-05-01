@@ -865,7 +865,8 @@ function drupal_process_form($form_id, &$form, &$form_state) {
 
     if ($form_state['submitted'] && !form_get_errors() && !$form_state['rebuild']) {
       // Execute form submit handlers.
-      form_execute_handlers('submit', $form, $form_state);
+		
+		form_execute_handlers('submit', $form, $form_state);
 
       // We'll clear out the cached copies of the form and its stored data
       // here, as we've finished with them. The in-memory copies are still
@@ -1462,7 +1463,7 @@ function form_execute_handlers($type, &$form, &$form_state) {
   else {
     $handlers = array();
   }
-
+  drupal_debug($handlers,'adsadasdsa');
   foreach ($handlers as $function) {
     // Check if a previous _submit handler has set a batch, but make sure we
     // do not react to a batch that is already being processed (for instance

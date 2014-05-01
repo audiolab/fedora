@@ -309,7 +309,7 @@ function islandora_arteleku_xml_form_builder_get_transforms() {
     );
 }
 
-
+/*
 function islandora_arteleku_islandora_sp_pdf_islandora_object_modified($object) {
   //dpm(t("El objeto ha sido editado correctamente"));
   //error_log("MODIFIED");
@@ -420,6 +420,6 @@ function islandora_arteleku_islandora_sp_pdf_islandora_object_ingested($object) 
  endif;
 }
 
-
+ */
 
 ?>

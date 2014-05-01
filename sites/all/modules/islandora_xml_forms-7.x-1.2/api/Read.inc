@@ -63,7 +63,7 @@ class Read implements Action {
     //drupal_set_message('Read (Action)');
     //drupal_set_message('&nbsp;->Location: ' . $element->getLocation());
     //drupal_set_message('&nbsp;->' . $this->path);
-    try {
+	try {
       $results = $this->path->query($document, $element);
     }
     catch (XMLFormsContextNotFoundException $e) {
@@ -73,13 +73,6 @@ class Read implements Action {
        */
       $results = new DOMNodeList();
     }
-    /* if ($results->length) {
-     $result = $results->item(0);
-     drupal_set_message('&nbsp;->Result: ' . $result->tagName);
-     }
-     else {
-     drupal_set_message('&nbsp;->Result: None');
-     } */
     return $results;
   }
 

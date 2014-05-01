@@ -48,7 +48,7 @@ class Tags {
     $element['#suffix'] = '</div>';
     foreach (element_children($element) as $key) {
       $child = $element[$key];
-      $hash = $child['#hash'];
+	  $hash = $child['#hash'];
       $element['controls']['edit'][$hash] = self::createEditButton($element, $child);
       $element['controls']['remove'][$hash] = self::createRemoveButton($element, $child);
     }

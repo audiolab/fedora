@@ -73,7 +73,7 @@ class Update implements Action {
         NULL; // Filter the value.
     $results = $this->path->query($document, $element);
     $results = dom_node_list_to_array($results);
-    foreach ($results as $node) {
+	foreach ($results as $node) {
       $this->doUpdate($node, $value);
     }
     return TRUE;

@@ -86,12 +86,20 @@ function arteleku_elements_ajax_callback($form, $form_state) {
   );
 }
 
+function arteleku_elements_xml_form_authority_read_alter(FormElement &$element, $value, $node){
+	$valueUri = $node->getAttribute('valueURI');
+	$lang = $node->getAttribute('xml:lang');
+	$element->lang = $lang;
+	$valueUri = explode('/', $valueUri);
+	$element->tid = array_pop($valueUri);
+}
 
-function arteleku_elements_xml_form_authority_create_alter(XMLDocument &$created, FormElement $element, $value){
-	drupal_debug($created, "creado");
-	$t = $element->toArray();
-	drupal_debug($t, "seguido");
 
+function arteleku_elements_xml_form_authority_create_alter(DOMElement &$created, FormElement $element, $value){
+	if (isset($element->lang) && isset($element->tid)){
+		$created->setAttribute('xml:lang', $element->lang);
+		$created->setAttribute('valueURI', "http://artxibo.arteleku.net/taxonomy/term/{$element->tid}");
+	}
 }
 
 function arteleku_elements_form_element_authorities_ajax_alter(FormElement $element, array &$form, array &$form_state) {

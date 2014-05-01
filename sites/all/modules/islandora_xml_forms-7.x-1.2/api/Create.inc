@@ -134,23 +134,20 @@ class Create implements Action {
    */
   public function execute(XMLDocument $document, FormElement $element, $value = NULL) {
 
-	  $results = $this->path->query($document, $element);
+	$results = $this->path->query($document, $element);
     if ($results && $results->length > 0) {
-      $value = isset($value) ?
-          htmlspecialchars(html_entity_decode($value, ENT_QUOTES, 'UTF-8'), ENT_QUOTES, 'UTF-8') :
+		$value = isset($value) ?
+		htmlspecialchars(html_entity_decode($value, ENT_QUOTES, 'UTF-8'), ENT_QUOTES, 'UTF-8') :
           NULL; // Filter the value.
-      $parent = $results->item(0);
-      $created = $this->doCreate($document, $value);
-	  //Modificado por Xavier Balderas//
-	  $type = $element->type;
+		$parent = $results->item(0);
+		$created = $this->doCreate($document, $value);
+		//Modificado por Xavier Balderas//
+	  	$type = $element->type;
 		drupal_alter("xml_form_{$type}_create", $created, $element, $value );
-
-	  //Modificad por Xavier Balderas//
-	 
-	 
-	  $this->append($document, $created, $parent);
-      $document->registry->register($element->hash, $created);
-      return TRUE;
+	  	//Modificado por Xavier Balderas//
+	  	$this->append($document, $created, $parent);
+      	$document->registry->register($element->hash, $created);
+      	return TRUE;
     }
     return FALSE;
   }
