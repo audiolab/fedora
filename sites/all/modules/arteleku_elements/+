@@ -1,0 +1,120 @@
+<?php
+
+/**
+ * @file
+ *
+ */
+//module_load_include('inc', 'xml_form_elements', 'includes/TabPanel');
+
+class Authorities {
+
+  /**
+   * Loads the required resources for displaying the Tabs element.
+   *
+   * @staticvar boolean $load
+   *   Keeps us from loading the same files multiple times, while not required it just saves some time.
+   */
+  public static function addRequiredResources(array &$form_state) {
+      form_load_include($form_state, 'inc', 'xml_form_elements', 'includes/Element');
+      Element::addRequiredResources();
+	  drupal_add_js(drupal_get_path('module', 'arteleku_elements') . '/js/select2.js');
+	  drupal_add_js(drupal_get_path('module', 'arteleku_elements') . '/js/authority.js');
+      drupal_add_css(drupal_get_path('module', 'arteleku_elements') . '/css/select2.css');
+  }
+
+  /**
+   *
+   * @param array $element
+   * @param type $edit
+   * @param array $form_state
+   * @param array $complete_form
+   */
+  public static function process(array $element, array &$form_state, array $complete_form = NULL) {
+    self::addRequiredResources($form_state);
+	$element['#id'] = $element['#hash'];   
+	$element['#prefix'] = "<div class='clear-block'>";
+	$element['#suffix'] = '</div>';
+	$element['#ajax'] = array(
+			'callback' => 'arteleku_elements_ajax_callback',
+			'params' => array(
+				'render' => $element['#hash'],
+				'target' => $element['#hash']
+			)
+	);
+	return $element;
+  }
+
+  public static function Theme ($element){
+	  
+	  //cargo la taxonomia que me toca
+		$tax = taxonomy_get_tree(4);
+		$options = array();
+		foreach ($tax as $term){
+			$options[$term->tid] = $term->name;
+		}
+		$select = array();
+		$select['element'] = array(
+			'#type' => 'select',
+			'#id' => $element['#id'],
+			'#options' => $options,
+			'#size' => '30',
+			'#multiple' => true,
+			'#attributes' => array(
+				'class' => array('select2'),
+				'style' => 'width:300px;')
+		);	
+		dpm($select);
+		$s = theme('select', $select);
+
+		return $s;
+  }
+
+
+}
+
+function theme_authorities($vars){
+	return Authorities::Theme($vars['element']);
+}
+
+
+/**
+ * Preprocess tabs theme hook.
+ *
+ * @param array $vars
+ *
+function template_preprocess_tabs(&$vars) {
+  $tabs = $vars['element'];
+  // Header Info
+  $vars['collapsible'] = $tabs['#collapsible'] == TRUE;
+  $vars['collapsed'] = $tabs['#collapsed'] == TRUE;
+  // Get Tabpanels
+  $keys = element_children($tabs);
+  $children = array();
+
+  foreach ($keys as $key) {
+    $children[$key] = &$tabs[$key];
+  }
+  $children = array_filter($children, array('Tabs', 'FilterChildren'));
+  // First element has different icons, and title.
+  $first = array_shift($children);
+  $vars['title'] = isset($first['#title']) ? $first['#title'] : 1;
+  $vars['link'] = $first['#hash'];
+  // Remaining tabpanels.
+  $count = 2;
+  foreach ($children as $child) {
+    $title = isset($child['#title']) ? $child['#title'] : $count;
+    $delete = isset($child[TabPanel::DeleteButton]) ? $child[TabPanel::DeleteButton]['#id'] : FALSE;
+    $vars['tabpanels'][] = array($title, $child['#hash'], $delete);
+    $count++;
+  }
+  // Content Info
+  if (isset($tabs['#children'])) {
+    $vars['content'] = $tabs['#children'];
+  }
+  else {
+    $parents = $tabs['#array_parents'];
+    $name = array_pop($parents);
+    $vars['content'] = '';
+    drupal_set_message(t('Attempted to create tab %name without defining any child tabpanels.', array('%name' => $name)), 'error');
+  }
+}*/

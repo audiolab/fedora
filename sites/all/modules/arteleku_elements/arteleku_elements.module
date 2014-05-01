@@ -7,7 +7,7 @@
 
 /**
  * Constants
- */
+ 
 define('THEME_XML_FORM_ELEMENTS_TABS', 'tabs');
 define('THEME_XML_FORM_ELEMENTS_TABS_CONTENT', 'tabs_content');
 define('THEME_XML_FORM_ELEMENTS_TABPANEL', 'tabpanel');
@@ -25,99 +25,150 @@ define('PATH_XML_FORM_ELEMENTS_IMAGES', PATH_XML_FORM_ELEMENTS . 'images/');
 /**
  * Implements hook_element_info().
  */
-function xml_form_elements_element_info() {
+function arteleku_elements_element_info() {
   return array(
-    'tabs' => array(
+    'authorities' => array(
       '#input' => TRUE,
-      '#collapsible' => TRUE,
-      '#collapsed' => FALSE,
-      '#process' => array('xml_form_elements_tabs_process'),
-      '#theme_wrappers' => array('tabs', 'form_element'),
-    ),
-    'tabpanel' => array(
-      '#input' => TRUE,
-      '#process' => array('xml_form_elements_tabpanel_process'),
-      '#user_data' => array('add' => TRUE, 'delete' => TRUE),
-      '#theme_wrappers' => array('tabpanel'),
-    ),
-    'tags' => array(
-      '#input' => TRUE,
-      '#process' => array('xml_form_elements_tags_process'),
-      '#theme_wrappers' => array('tags', 'form_element'),
-    ),
-    'tag' => array(
-      '#input' => TRUE,
-      '#process' => array('xml_form_elements_tag_process'),
-      '#theme' => 'tag',
-    ),
-    'datepicker' => array(
-      '#input' => TRUE,
-      '#process' => array('xml_form_elements_datepicker_process'),
-      '#theme' => 'datepicker',
-      '#theme_wrappers' => array('form_element'),
-    ),
-    'defaultable_markup' => array(
-      '#markup' => '',
-      '#pre_render' => array(
-        'xml_form_elements_default_value_to_markup',
-        'drupal_pre_render_markup',
-        'xml_form_elements_remove_empty_markup',
-      ),
-      '#post_render' => array('xml_form_elements_defaultable_markup'),
-    ),
-    'defaultable_item' => array(
-      '#markup' => '',
-      '#pre_render' => array(
-        'xml_form_elements_default_value_to_markup',
-        'drupal_pre_render_markup',
-        'xml_form_elements_remove_empty_markup',
-      ),
-      '#theme_wrappers' => array('xml_form_element'),
-    ),
+	  '#process' => array('arteleku_elements_authorities_process'),
+	  '#theme_wrappers' => array('authorities', 'form_element'),
+  	),
+	'authority' => array(
+		'#input' => TRUE,
+		'#process' => array('arteleku_elements_authority_process'),
+		'#theme' => 'authority',
+		'#lang' => '',
+		'#tid' => ''
+	)
+
   );
 }
 
 /**
  * Implements hook_theme().
  */
-function xml_form_elements_theme($existing, $type, $theme, $path) {
+function arteleku_elements_theme($existing, $type, $theme, $path) {
   return array(
-    THEME_XML_FORM_ELEMENTS_TABS => array(
+    'authorities' => array(
       'render element' => 'element',
-      'template' => 'templates/Tabs',
-      'file' => 'includes/Tabs.inc',
-    ),
-    // The content of a single tabpanel.
-    THEME_XML_FORM_ELEMENTS_TABPANEL => array(
-      'render element' => 'element',
-      'file' => 'includes/TabPanel.inc',
-    ),
-    THEME_XML_FORM_ELEMENTS_TAGS => array(
-      'render element' => 'element',
-      'template' => 'templates/Tags',
-      'file' => 'includes/Tags.inc',
-    ),
-    THEME_XML_FORM_ELEMENTS_TAG => array(
-      'render element' => 'element',
-      'file' => 'includes/Tag.inc',
-    ),
-    THEME_XML_FORM_ELEMENTS_DATEPICKER => array(
-      'render element' => 'element',
-      'file' => 'includes/Datepicker.inc',
-    ),
-    'xml_form_element' => array(
-      'render element' => 'element',
-    ),
+	  'template' => 'templates/Authorities',
+	  'file' => 'includes/Authorities.inc',
+  	),
+	'authority' => array(
+		'render element' => 'element',
+		'file' => 'includes/Authority.inc'
+	)
   );
 }
 
 /**
- * Process the 'autoridades' Element 
+ * Process the 'taxonomy' Element 
  */
 
-/*function xml_form_elements_autoridades_process(array $element, array &$form_state, array $complete_form = NULL) {
-	return;
-}*/
+function arteleku_elements_authorities_process(array $element, array &$form_state, array $complete_form = NULL) {
+	form_load_include($form_state, 'inc', 'arteleku_elements', 'includes/Authorities');
+	return Authorities::Process($element, $form_state, $complete_form);
+}
+
+function arteleku_elements_authority_process(array $element, array &$form_state, array $complete_form = NULL) {
+	form_load_include($form_state, 'inc', 'arteleku_elements', 'includes/Authority');
+	return Authority::Process($element, $form_state, $complete_form);
+}
+
+function arteleku_elements_ajax_callback($form, $form_state) {
+  $t = find_element($form, $form_state['triggering_element']['#ajax']['params']['render']);
+  $html = drupal_render($t);
+  $commands = array();
+  $commands[] = ajax_command_replace(NULL, $html);
+  $commands[] = ajax_command_invoke(NULL, 'Drupal.behaviors.artelekuFormElementAuthority.authority.registerSelect');
+  return array(
+	  '#type' => 'ajax',
+	  '#commands' => $commands
+  );
+}
+
+
+function arteleku_elements_xml_form_authority_create_alter(XMLDocument &$created, FormElement $element, $value){
+	drupal_debug($created, "creado");
+	$t = $element->toArray();
+	drupal_debug($t, "seguido");
+
+}
+
+function arteleku_elements_form_element_authorities_ajax_alter(FormElement $element, array &$form, array &$form_state) {
+  $triggering_element = $form_state['triggering_element'];
+  $action = $triggering_element['#ajax']['params']['action'];
+  $hash = $triggering_element['#ajax']['params']['target'];
+
+  switch ($action) {
+    case 'add':
+      arteleku_elements_form_element_authorities_ajax_add($element, $form, $form_state, $hash);
+	  break;
+    case 'delete':
+     // xml_form_elements_form_element_tabs_ajax_delete($element, $form, $form_state);
+      break;
+  }
+}
+
+
+
+
+function arteleku_elements_form_element_authorities_ajax_add(FormElement $element, array &$form, array &$form_state, $hash) {
+
+		$select_value = $form_state['input'][$hash . 'select'];  
+
+	   /*
+		* En $select_value tengo un array con los valores seleccionados en el selectbox. Tengo que buscar los valores del mismo
+		* y hacer un loop para crear los elementos. Me voy a cargar toooooooooooooooooodos los elementos que hay de por medio
+		* para crearlos todos bien. (Mirar si el authority puede generarse sólo....) y para cada idioma!!!!!!
+		*
+		*/
+	
+		drupal_debug($select_value, 'arteleku');
+		
+		// Get Input Value as its not stored in the object form.
+  		$element_children = array_values($element->children);
+  		
+		$base_authority = clone $element_children[0];
+
+		foreach($element_children as $children){
+			$children->orphan();
+			$c_hash = $children->hash;
+			foreach(element_children($form) as $form_child){
+				if($form[$form_child]['#hash'] == $c_hash){
+					unset($form[$form_child]);
+				}
+			}
+		}  //Hemos eliminado todos los hijos, pero me he quedado con uno en $base_authority para poder crear los nuevos
+
+		foreach ($select_value as $tid){
+			//Lo vamos a recrear para cada una de las taxonomías y para cada uno de los idiomas.
+			$term = taxonomy_term_load($tid);
+			//el campo del nombre es name_field
+			foreach($term->name_field as $lang_code => $term_data){
+				$localized_name = $term_data[0]['value'];
+				$aut = clone $base_authority;
+				$element->adopt($aut);
+				$aut->lang = $lang_code;
+				$aut->tid = $tid;
+				$aut = $aut->toArray();
+				$aut['#default_value'] = $localized_name;
+				//$aut['#lang'] = $lang_code;
+				//$aut['#tid'] = $tid;
+				$form[] = $aut;
+			}	
+		
+		}
+
+
+  // Create new tag and have it stored in the state.
+  //$input->parent->adopt($tag);
+  //$tag = $tag->toArray();
+  //$tag['#default_value'] = $default_value;
+  //drupal_debug($tag, 'oeoeoeoeooeoeoeooeoe');
+  // Update drupal form.
+  //$form[] = $tag;
+}
+
 
 /**
  * Process the 'tabs' Element.
@@ -133,7 +184,7 @@ function xml_form_elements_theme($existing, $type, $theme, $path) {
  *
  * @return array
  *   The processed element.
- */
+ 
 function xml_form_elements_tabs_process(array $element, array &$form_state, array $complete_form = NULL) {
   form_load_include($form_state, 'inc', 'xml_form_elements', 'includes/Tabs');
   return Tabs::Process($element, $form_state, $complete_form);
@@ -153,7 +204,7 @@ function xml_form_elements_tabs_process(array $element, array &$form_state, arra
  *
  * @return array
  *   The processed element.
- */
+ 
 function xml_form_elements_tabpanel_process(array $element, array &$form_state, array $complete_form = NULL) {
   form_load_include($form_state, 'inc', 'xml_form_elements', 'includes/TabPanel');
   return TabPanel::Process($element, $form_state, $complete_form);
@@ -173,7 +224,7 @@ function xml_form_elements_tabpanel_process(array $element, array &$form_state, 
  *
  * @return array
  *   The processed element.
- */
+ 
 function xml_form_elements_tags_process(array $element, array &$form_state, array $complete_form = NULL) {
   form_load_include($form_state, 'inc', 'xml_form_elements', 'includes/Tags');
   return Tags::Process($element, $form_state, $complete_form);
@@ -191,7 +242,7 @@ function xml_form_elements_tags_process(array $element, array &$form_state, arra
  *
  * @return array
  *   The processed element.
- */
+ 
 function xml_form_elements_tag_process($element, &$form_state, $complete_form) {
   form_load_include($form_state, 'inc', 'xml_form_elements', 'includes/Tag');
   return Tag::Process($element, $form_state, $complete_form);
@@ -209,7 +260,7 @@ function xml_form_elements_tag_process($element, &$form_state, $complete_form) {
  *
  * @return array
  *   The processed element.
- */
+ *
 function xml_form_elements_datepicker_process($element, &$form_state, $complete_form) {
   form_load_include($form_state, 'inc', 'xml_form_elements', 'includes/Datepicker');
   return Datepicker::Process($element, $form_state, $complete_form);
@@ -225,7 +276,7 @@ function xml_form_elements_datepicker_process($element, &$form_state, $complete_
  *
  * @return array
  *   The form element to render in response to the AJAX request.
- */
+ *
 function xml_form_elements_ajax_callback($form, $form_state) {
   return find_element($form, $form_state['triggering_element']['#ajax']['params']['render']);
 }
@@ -264,9 +315,9 @@ function xml_form_elements_form_element_tabs_ajax_delete(FormElement $element, a
 
 /**
  * Not ideal a hook used for modifying tags during the build function.
- */
+ *
 function xml_form_elements_form_element_tags_ajax_alter(FormElement $element, array &$form, array &$form_state) {
-	$triggering_element = $form_state['triggering_element'];
+  $triggering_element = $form_state['triggering_element'];
   $action = $triggering_element['#ajax']['params']['action'];
   switch ($action) {
     case 'add':
@@ -332,7 +383,7 @@ function xml_form_elements_form_element_tags_ajax_edit(FormElement $element, arr
  *
  * @param array $elements
  *   An array representing the given element.
- */
+ *
 function xml_form_elements_default_value_to_markup($elements) {
   if (empty($elements['#markup']) && !empty($elements['#default_value'])) {
     $elements['#markup'] = $elements['#default_value'];
@@ -345,7 +396,7 @@ function xml_form_elements_default_value_to_markup($elements) {
  *
  * @param array $elements
  *   An array representing the given element.
- */
+ *
 function xml_form_elements_remove_empty_markup($elements) {
   $children = element_children($elements);
   if (!empty($elements['#markup']) || count($children) > 0) {
@@ -358,7 +409,7 @@ function xml_form_elements_remove_empty_markup($elements) {
 
 /**
  * Implements theme_hook().
- */
+ *
 function theme_xml_form_element(&$elements) {
   if (!empty($elements['element']['#children'])) {
     return theme('form_element', $elements['element']);
@@ -375,7 +426,7 @@ function theme_xml_form_element(&$elements) {
  *
  * @return string
  *   The rendered children if there is markup, nothing otherwise.
- */
+ *
 function xml_form_elements_defaultable_markup($children, &$elements) {
   if (!empty($children)) {
     return $children;
@@ -387,4 +438,4 @@ function xml_form_elements_defaultable_markup($children, &$elements) {
     $elements['#suffix'] = '';
     return '';
   }
-}
+}*/

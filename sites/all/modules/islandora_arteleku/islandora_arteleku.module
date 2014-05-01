@@ -42,15 +42,6 @@ function islandora_arteleku_form() {
 	  return $form;
 }
 
-function islandora_arteleku_element_info() {
-	return array(
-		'autoridades_new' => array(
-			'#type' => 'textfield', 
-  			'#title' => t('ejemplos de tipos'), 
-  			'#default_value' => 'test', 
-		),
-	);
-}
 
 //function islandora_arteleku_form_alter(&$form, &$form_state, $form_id) { dpm(print_r($form_id)); }
 

@@ -133,14 +133,22 @@ class Create implements Action {
    * @param mixed $value
    */
   public function execute(XMLDocument $document, FormElement $element, $value = NULL) {
-    $results = $this->path->query($document, $element);
+
+	  $results = $this->path->query($document, $element);
     if ($results && $results->length > 0) {
       $value = isset($value) ?
           htmlspecialchars(html_entity_decode($value, ENT_QUOTES, 'UTF-8'), ENT_QUOTES, 'UTF-8') :
           NULL; // Filter the value.
       $parent = $results->item(0);
       $created = $this->doCreate($document, $value);
-      $this->append($document, $created, $parent);
+	  //Modificado por Xavier Balderas//
+	  $type = $element->type;
+		drupal_alter("xml_form_{$type}_create", $created, $element, $value );
+
+	  //Modificad por Xavier Balderas//
+	 
+	 
+	  $this->append($document, $created, $parent);
       $document->registry->register($element->hash, $created);
       return TRUE;
     }
@@ -159,7 +167,7 @@ class Create implements Action {
       self::Attribute => 'createAttribute',
       self::XML => 'createXML',
     );
-    try {
+	try {
       return $this->$action[$this->type]($document, $value);
     }
     catch (Exception $e) {
