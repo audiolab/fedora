@@ -29,6 +29,7 @@ function arteleku_elements_element_info() {
   return array(
     'authorities' => array(
       '#input' => TRUE,
+	  '#user_date' => array('taxonomy' => '0'),
 	  '#process' => array('arteleku_elements_authorities_process'),
 	  '#theme_wrappers' => array('authorities', 'form_element'),
   	),
@@ -87,6 +88,10 @@ function arteleku_elements_ajax_callback($form, $form_state) {
 }
 
 function arteleku_elements_xml_form_authority_read_alter(FormElement &$element, $value, $node){
+	if (empty($node))
+		return NULL;	
+		
+		
 	$valueUri = $node->getAttribute('valueURI');
 	$lang = $node->getAttribute('xml:lang');
 	$element->lang = $lang;

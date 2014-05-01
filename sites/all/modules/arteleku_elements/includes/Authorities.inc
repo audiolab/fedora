@@ -53,28 +53,27 @@ class Authorities {
 	private static function createSelect(array &$element){
 	
 	  // First tag is the textfield, all others show up as icons with hidden inputs.
-  	$tax = taxonomy_get_tree(4);
-	$options = array();
-	foreach ($tax as $term){
-		$options[$term->tid] = $term->name;
-	}
-	$select = array(
+		$options=array();
+		if (isset($element['#user_data']['taxonomy'])){
+			$vid = $element['#user_data']['taxonomy'];
+			$tax = taxonomy_get_tree($vid);
+			foreach ($tax as $term){
+				$options[$term->tid] = $term->name;
+			}
+		}
+		$select = array(
 			'#type' => 'select',
 			'#options' => $options,
-			'#multiple' => 'multiple',
+			'#multiple' => $element['#multiple'],
 			'#size' => 30,
 			'#attributes' => array(
 				'class' => array('select2'),
 				'style' => 'width:300px;',
-				'multiple'=> 'multiple',
 				'data-hash' => $element['#hash'])
 			);
  	
-	$select['#id'] = $select['#name'] = $element['#hash'] . 'select';
-	
-	return $select;
-	
-	
+		$select['#id'] = $select['#name'] = $element['#hash'] . 'select';
+		return $select;
 	}
 
   private static function createAddButton(array &$element) {

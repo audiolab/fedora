@@ -15,6 +15,13 @@
 						var id = '#' + this.dataset.hash + '-add';
 						$(id).trigger('mousedown');
 					});
+
+					$sel.on('select2-removing', function(e){
+						var tID = e.val;
+						$("option[value='" + tID + "']", this).removeAttr('selected');
+						var id = '#' + this.dataset.hash + '-add';
+						$(id).trigger('mousedown');
+					})
 					
 					var seleccionados = [];
 					
