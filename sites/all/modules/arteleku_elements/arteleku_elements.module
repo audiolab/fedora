@@ -12,7 +12,7 @@ function arteleku_elements_element_info() {
   return array(
     'authorities' => array(
       '#input' => TRUE,
-	  '#user_date' => array('taxonomy' => '0'),
+	  '#user_date' => array('taxonomy' => '0', 'multilingual' => TRUE),
 	  '#process' => array('arteleku_elements_authorities_process'),
 	  '#theme_wrappers' => array('authorities', 'form_element'),
   	),
@@ -85,8 +85,10 @@ function arteleku_elements_xml_form_authority_read_alter(FormElement &$element, 
 
 function arteleku_elements_xml_form_authority_create_alter(DOMElement &$created, FormElement $element, $value){
 	global $base_url;
-	if (isset($element->lang) && isset($element->tid)){
+	if (isset($element->lang)){
 		$created->setAttribute('xml:lang', $element->lang);
+	}
+	if (isset($element->tid)){
 		$created->setAttribute('valueURI', "{$base_url}/taxonomy/term/{$element->tid}");
 	}
 }
@@ -134,18 +136,29 @@ function arteleku_elements_form_element_authorities_ajax_add(FormElement $elemen
 		if (!is_array($select_value)){
 			$select_value = array($select_value);
 		}
+
 		foreach ($select_value as $tid){
 			//Lo vamos a recrear para cada una de las taxonomías y para cada uno de los idiomas.
 			$term = taxonomy_term_load($tid);
-			//el campo del nombre es name_field
-			foreach($term->name_field as $lang_code => $term_data){
-				$localized_name = $term_data[0]['value'];
+			
+			if ($element->user_data['multilingual']){
+				//el campo del nombre es name_field
+				foreach($term->name_field as $lang_code => $term_data){
+					$localized_name = $term_data[0]['value'];
+					$aut = clone $base_authority;
+					$element->adopt($aut);
+					$aut->lang = $lang_code;
+					$aut->tid = $tid;
+					$aut = $aut->toArray();
+					$aut['#default_value'] = $localized_name;
+					$form[] = $aut;
+				}
+			}else{
 				$aut = clone $base_authority;
 				$element->adopt($aut);
-				$aut->lang = $lang_code;
-				$aut->tid = $tid;
+				$aut->tid = $term->tid;
 				$aut = $aut->toArray();
-				$aut['#default_value'] = $localized_name;
+				$aut['#default_value'] = $term->name;
 				$form[] = $aut;
 			}	
 		
